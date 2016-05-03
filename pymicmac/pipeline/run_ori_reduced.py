@@ -1,5 +1,5 @@
  #!/usr/bin/python
-import os
+import os, argparse
 from pymicmac import utils_execution
 
 def run(name, extension, prec, sizeTile, distMul, multiVG, gcp2DFile, gcp3DFile, mountPoint, onlyPrint):
@@ -75,4 +75,4 @@ if __name__ == "__main__":
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.name, a.extension, a.prec, a.sizeTile, a.distMul, a.multiVG, a.gcp2DFile, a.gcp3DFile, a.mountPoint, a.onlyPrint)
     except Exception as e:
-        print e
+        print(e)

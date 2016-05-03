@@ -1,5 +1,5 @@
  #!/usr/bin/python
-import os
+import os, argparse
 from pymicmac import utils_execution
 
 def run(name, extension, nX, nY, adaptive, gain_mode, threshold, ordering, gcp2DFile, gcp3DFile, noodlesNumProc, mountPoint, onlyPrint):
@@ -94,4 +94,4 @@ if __name__ == "__main__":
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.name, a.extension, a.nX, a.nY, a.adaptive, a.gain_mode, a.threshold, a.ordering, a.gcp2DFile, a.gcp3DFile, a.noodlesNumProc, a.mountPoint, a.onlyPrint)
     except Exception as e:
-        print e
+        print(e)

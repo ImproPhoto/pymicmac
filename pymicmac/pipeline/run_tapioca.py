@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import argparse
 from pymicmac import utils_execution
 
 def run(tapiocaOptions, mountPoint, onlyPrint):
@@ -22,4 +23,4 @@ if __name__ == "__main__":
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.tapiocaOptions, a.mountPoint, a.onlyPrint)
     except Exception as e:
-        print e
+        print(e)
