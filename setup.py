@@ -17,7 +17,7 @@ except:
 setup(
     name='PyMicMac',
     version='0.1dev',
-    packages=['pymicmac',],
+    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.monitor', 'pymicmac.noodles', 'pymicmac.other', 'pymicmac.pipeline', 'pymicmac.xmlmm'],
     license='',
     long_description=open('README.md').read(),
     author='Oscar Martinez-Rubi',
