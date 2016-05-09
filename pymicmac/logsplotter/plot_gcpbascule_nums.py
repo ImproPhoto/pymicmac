@@ -3,7 +3,7 @@ import sys, os, math
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
-import xml.etree.ElementTree
+from lxml import etree
 from tabulate import tabulate
 
 gcpsXYZ = {}
@@ -15,8 +15,8 @@ if not os.path.isfile(xmlFile):
     print('ERROR: ' + xmlFile + ' not found')
     sys.exit(1)
 
-e = xml.etree.ElementTree.parse(xmlFile).getroot()
-for p in e.findall('OneAppuisDAF'):
+e = etree.parse(xmlFile).getroot()
+for p in e.getchildren():
     gcp = p.find('NamePt').text
     fields = p.find('Pt').text.split()
     incertitude = p.find('Incertitude').text

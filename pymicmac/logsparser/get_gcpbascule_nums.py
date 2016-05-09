@@ -1,7 +1,7 @@
  #!/usr/bin/python
 import sys, numpy, os, math
 from tabulate import tabulate
-import xml.etree.ElementTree
+from lxml import etree
 
 gcpsXYZ = {}
 cpsXYZ = {}
@@ -12,8 +12,8 @@ if not os.path.isfile(xmlFile):
     print('ERROR: ' + xmlFile + ' not found')
     sys.exit(1)
 
-e = xml.etree.ElementTree.parse(xmlFile).getroot()
-for p in e.findall('OneAppuisDAF'):
+e = etree.parse(xmlFile).getroot()
+for p in e.getchildren():
     gcp = p.find('NamePt').text
     fields = p.find('Pt').text.split()
     incertitude = p.find('Incertitude').text
