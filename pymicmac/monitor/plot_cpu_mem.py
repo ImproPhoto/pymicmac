@@ -1,5 +1,6 @@
  #!/usr/bin/python
 import sys
+import numpy
 import matplotlib.pyplot as plt
 
 inputArgument = sys.argv[1]
@@ -16,6 +17,18 @@ for line in lines:
         t.append(float(fields[0]))
         c.append(float(fields[1]))
         m.append(float(fields[2]))
+
+if len(sys.argv) == 3 and sys.argv[2] == 'True':
+    t = numpy.array(t)
+    d = t[1:] - t[:-1]
+    tn = []
+    tn.append(t[0])
+    acc = 0.
+    for i in range(1,len(t)):
+        if d[i-1] > 5.:
+            acc+=d[i-1]
+        tn.append(t[i] - acc)
+    t = tn
 
 fig, ax1 = plt.subplots()
 ax1.plot(t, c, 'b.-')
