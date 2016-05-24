@@ -8,9 +8,9 @@ def executeCommandMonitor(commandName, command, diskPath, onlyPrint=False):
         return
 
     # Define the names of the script that executes the command, the log file and the monitor file
-    eFileName = commandName + '.sh'
-    logFile = commandName + '.log'
-    monitorLogFileName = commandName + '.mon'
+    eFileName = commandName.replace(' ', '_') + '.sh'
+    logFile = commandName.replace(' ', '_') + '.log'
+    monitorLogFileName = commandName.replace(' ', '_') + '.mon'
 
     # Create script for command execution
     eFile = open(eFileName, 'w')
