@@ -17,13 +17,13 @@ except:
 setup(
     name='PyMicMac',
     version='0.1dev',
-    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.monitor', 'pymicmac.noodles', 'pymicmac.other', 'pymicmac.pipeline', 'pymicmac.xmlmm'],
+    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.monitor', 'pymicmac.noodles', 'pymicmac.other', 'pymicmac.workflow', 'pymicmac.xmlmm'],
     license='',
     long_description=open('README.md').read(),
     author='Oscar Martinez-Rubi',
     author_email='o.rubi@esciencecenter.nl',
     url='https://github.com/pymicmac/pymicmac',
     install_requires=[
-          'numpy', 'tabulate', 'matplotlib', 'lxml'
+          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles'
     ],
 )
