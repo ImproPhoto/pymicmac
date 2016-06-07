@@ -1,11 +1,5 @@
-import os
-from pymicmac.pipeline import run_original
+from pymicmac.workflow import run_param_estimation
 
-#ppfree,affineFree,drMax
-testNames = (
-"Original_0_0_0" ,
-)
-
-for testName in testNames:
-    (_, ppfree,affineFree,drMax) = testName.split('_')
-    run_original.run(testName, "JPG", ppfree, affineFree, drMax, 'coord_List2D.xml', 'gcp_List3D.xml', '/media/data', False)
+run_param_estimation.run('TestWorkflow', "JPG",
+                         'estimation_workflow.xml', 
+                         '/media/data', False, False)
