@@ -1,0 +1,10 @@
+<MicMacConfiguration>
+  <Component>
+    <name> Malt </name>
+    <options> GeomImage ".*JPG" TapasOut "Master=IMG_1237.JPG" "DirMEC=Results" UseTA=1 ZoomF=1 ZoomI=32 Purge=true </options>
+  </Component>
+  <Component>
+    <name> Nuage2Ply </name>
+    <options> "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="IMG_1237.JPG"</options>
+  </Component>
+</MicMacConfiguration>
