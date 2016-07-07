@@ -1,5 +1,14 @@
 # pymicmac
 Python tools for the MicMac FOSS photogrammetric "suite". It works only in Linux systems.
+Requires Python 3.5.
+
+##Installation
+
+Install the following in a virtualenv:
+
+pip install .
+
+(some system libraries have to be install: freetype)
 
 ##Instructions
 1- Use workflow/run_tiepoint_detection.py to run the tie-point detection and matching. This requires the image files in the local folder. The output will be a Homol folder with the tie-points. See example of how to run it in tests/run_tapioca.py (if you have access to a SGE cluster and your image set has Geotagging information you may be interested on checking out the workflow/run_tiepoint_detection_geotag_sge_cluster tools)
