@@ -26,15 +26,13 @@ pip install .
 
 Python dependencies: noodles (see https://github.com/NLeSC/noodles for installation instructions)
 
-Other python  dependencies (numpy, tabulate, matplotlib, lxml) are automatically installed by `pip install` but some system libraries have to be install (for example freetype is required by matplotlib and may need to be installed by the system admin)
+Other python  dependencies (numpy, tabulate, matplotlib, lxml) are automatically installed by `pip install` but some system libraries have to be installed (for example freetype is required by matplotlib and may need to be installed by the system admin)
 
-For now pymicmac works only in Linux systems.
-
-Requires Python 3.5.
+For now pymicmac works only in Linux systems. Requires Python 3.5.
 
 ## Instructions
 
-The tool `workflow/run_workflow.py` is a tool that can be used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-point detection, (2) parameters estimation and (3) matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`).
+The tool `workflow/run_workflow.py` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-point detection, (2) parameters estimation and (3) matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`).
 
 To configure the tool:
 -  which images are used is specified with an ASCII file containing the list of files (one image path per line) if the tool is run as a script or with a python list/tuple with the images paths if the tool is imported.
@@ -83,7 +81,7 @@ Some XML examples:
   </Component>
   <Component>
     <name> Nuage2Ply </name>
-    <options> "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg"</options>
+    <options> "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg" Out=1.ply</options>
   </Component>
 </MicMacConfiguration>
 ```
