@@ -1,4 +1,2 @@
-from pymicmac.workflow import run_tiepoint_detection
-
-run_tiepoint_detection.run('All ".*JPG" -1', False)
-# run_tiepoint_detection.run('File GrapheHom.xml -1', False)
+from pymicmac.workflow import run_workflow
+run_workflow.run('list.txt', 'tie-point-detection', 'tie-point-detection.xml', False, False)

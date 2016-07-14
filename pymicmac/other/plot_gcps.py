@@ -4,63 +4,59 @@ from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
 from lxml import etree
+from pymicmac import utils_execution
 
-gcpsXYZ = {}
-cpsXYZ = {}
+def run(xmlFile):
 
-xmlFile = sys.argv[1]
+    (gcpsXYZ, cpsXYZ) = utils_execution.readGCPXMLFile(xmlFile)
 
-if not os.path.isfile(xmlFile):
-    print('ERROR: ' + xmlFile + ' not found')
-    sys.exit(1)
+    fig = plt.figure(figsize=(27,15))
+    fig.subplots_adjust(left=0.01, bottom=0.01, right=0.99, top=0.99, wspace=0.005, hspace=0.005)
 
-e = etree.parse(xmlFile).getroot()
-for p in e.getchildren():
-    gcp = p.find('NamePt').text
-    fields = p.find('Pt').text.split()
-    incertitude = p.find('Incertitude').text
+    ax = fig.add_subplot(1, 1, 1, projection='3d')
 
-    x = float(fields[0])
-    y = float(fields[1])
-    z = float(fields[2])
-    if incertitude.count('-1'):
-        cpsXYZ[gcp] = (x, y, z)
-    else:
-        gcpsXYZ[gcp] = (x, y, z)
+    (xs,ys,zs) = ([],[],[])
+    for gcp in gcpsXYZ:
+        (x,y,z) = gcpsXYZ[gcp]
+        xs.append(x)
+        ys.append(y)
+        zs.append(z)
+        ax.text(x, y, z, gcp, color='blue', fontsize=6)
+    ax.scatter(xs, ys, zs, marker='o', c='blue')
 
-fig = plt.figure(figsize=(27,15))
-fig.subplots_adjust(left=0.01, bottom=0.01, right=0.99, top=0.99, wspace=0.005, hspace=0.005)
+    (xs,ys,zs) = ([],[],[])
+    for cp in cpsXYZ:
+        (x,y,z) = cpsXYZ[cp]
+        xs.append(x)
+        ys.append(y)
+        zs.append(z)
+        ax.text(x, y, z, cp, color='red', fontsize=6)
+    ax.scatter(xs, ys, zs, marker='o', c='red')
 
-ax = fig.add_subplot(1, 1, 1, projection='3d')
+    ax.set_xlabel('X', fontsize=8, labelpad=-5)
+    ax.set_ylabel('Y', fontsize=8, labelpad=-5)
+    ax.set_zlabel('Z', fontsize=8, labelpad=-5)
 
-(xs,ys,zs) = ([],[],[])
-for gcp in gcpsXYZ:
-    (x,y,z) = gcpsXYZ[gcp]
-    xs.append(x)
-    ys.append(y)
-    zs.append(z)
-    ax.text(x, y, z, gcp, color='blue', fontsize=6)
-ax.scatter(xs, ys, zs, marker='o', c='blue')
+    ax.tick_params(labelsize=6, direction='out', pad=-1)
+    ax.tick_params(axis='z', labelsize=0, pad=-3)
 
-(xs,ys,zs) = ([],[],[])
-for cp in cpsXYZ:
-    (x,y,z) = cpsXYZ[cp]
-    xs.append(x)
-    ys.append(y)
-    zs.append(z)
-    ax.text(x, y, z, cp, color='red', fontsize=6)
-ax.scatter(xs, ys, zs, marker='o', c='red')
+    blue_proxy = plt.Rectangle((0, 0), 1, 1, fc="b")
+    red_proxy = plt.Rectangle((0, 0), 1, 1, fc="r")
+    ax.legend([blue_proxy,red_proxy],['GCPs','CPs'], loc='upper right', bbox_to_anchor=(0.9, 0.9),prop={'size':6})
+    ax.view_init(elev=-90., azim=0.)
 
-ax.set_xlabel('X', fontsize=8, labelpad=-5)
-ax.set_ylabel('Y', fontsize=8, labelpad=-5)
-ax.set_zlabel('Z', fontsize=8, labelpad=-5)
+    plt.show()
 
-ax.tick_params(labelsize=6, direction='out', pad=-1)
-ax.tick_params(axis='z', labelsize=0, pad=-3)
+def argument_parser():
+   # define argument menu
+    description = "Plots the 3D positions of GCPs/CPS"
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('-x', '--xml',default='', help='XML file with the 3D position of the GCPs (and possible CPs)', type=str, required=True)
+    return parser
 
-blue_proxy = plt.Rectangle((0, 0), 1, 1, fc="b")
-red_proxy = plt.Rectangle((0, 0), 1, 1, fc="r")
-ax.legend([blue_proxy,red_proxy],['GCPs','CPs'], loc='upper right', bbox_to_anchor=(0.9, 0.9),prop={'size':6})
-ax.view_init(elev=-90., azim=0.)
-
-plt.show()
+if __name__ == "__main__":
+    try:
+        a = utils_execution.apply_argument_parser(argument_parser())
+        run(a.xml)
+    except Exception as e:
+        print(e)

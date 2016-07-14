@@ -1,6 +1,29 @@
  #!/usr/bin/python
 import os,time,stat,subprocess,shutil,glob
 from pymicmac.monitor import monitor_cpu_mem_disk
+from lxml import etree
+
+def readGCPXMLFile(xmlFile):
+    gcpsXYZ = {}
+    cpsXYZ = {}
+
+    if not os.path.isfile(xmlFile):
+        raise Exception('ERROR: ' + xmlFile + ' not found')
+
+    e = etree.parse(xmlFile).getroot()
+    for p in e.getchildren():
+        gcp = p.find('NamePt').text
+        fields = p.find('Pt').text.split()
+        incertitude = p.find('Incertitude').text
+
+        x = float(fields[0])
+        y = float(fields[1])
+        z = float(fields[2])
+        if incertitude.count('-1'):
+            cpsXYZ[gcp] = (x, y, z)
+        else:
+            gcpsXYZ[gcp] = (x, y, z)
+    return (gcpsXYZ, cpsXYZ)
 
 def executeCommandMonitor(commandName, command, diskPath, onlyPrint=False):
     if onlyPrint:
@@ -11,6 +34,10 @@ def executeCommandMonitor(commandName, command, diskPath, onlyPrint=False):
     eFileName = commandName.replace(' ', '_') + '.sh'
     logFile = commandName.replace(' ', '_') + '.log'
     monitorLogFileName = commandName.replace(' ', '_') + '.mon'
+
+    #Remove log file if already exists
+    if os.path.isfile(logFile):
+        os.system('rm ' + logFile)
 
     # Create script for command execution
     eFile = open(eFileName, 'w')
@@ -30,27 +57,41 @@ def getSize(absPath):
     except:
         return -1
 
-def initPipelineFolder(pipelineName, imageFormat, itemsToLink):
-    pwd = os.getcwd()
+def initExecutionFolder(imagesAbsPaths, executionFolder, mmComponents):
+    # Create directory for this execution
+    executionFolderAbsPath = os.path.abspath(executionFolder)
+    if os.path.exists(executionFolderAbsPath):
+        raise Exception(executionFolder + ' already exists!')
+    os.makedirs(executionFolderAbsPath)
 
-    # Recreate directory for this pipeline run
-    shutil.rmtree(pipelineName, True)
-    os.makedirs(pipelineName)
+    # Create links for the images (existance of images has already being checked)
+    for imageAbsPath in imagesAbsPaths:
+        os.symlink(imageAbsPath, os.path.join(executionFolderAbsPath, os.path.basename(imageAbsPath)))
 
-    #Create links of all images in the pipeline folder
-    images = glob.glob('*.' + imageFormat)
-    os.chdir(pipelineName)
-    for image in images:
-        os.symlink('../' + image, image)
+    # Create links for the rest of files/folder specifed in mmComponents/toLink XML
+    for mmComponent in mmComponents:
+        typeToLinkComponent = mmComponent.find("toLink")
+        if typeToLinkComponent != None:
+            elements = typeToLinkComponent.text.strip().split()
+            for element in elements:
+                if element.endswith('/'):
+                    element = element[:-1]
+                elementAbsPath = os.path.abspath(element)
+                if os.path.isfile(elementAbsPath) or os.path.isdir(elementAbsPath):
+                    os.symlink(elementAbsPath , os.path.join(executionFolderAbsPath, os.path.basename(elementAbsPath)))
+                else:
+                    raise Exception(element + ' does not exist!')
 
-    for itemToLink in itemsToLink:
-        #Create link
-        if os.path.isfile('../' + itemToLink) or os.path.isdir('../' + itemToLink):
-            os.symlink('../' + itemToLink , itemToLink)
-        else:
-            raise Exception('../' + itemToLink + ' does not exist!')
-
-    os.chdir(pwd)
+def getImages(imagesListFile):
+    images = []
+    if not os.path.isfile(imagesListFile):
+        raise Exception(imagesListFile + ' does not exist!')
+    for line in open(imagesListFile, 'r').read().split('\n'):
+        if line != '':
+            if not os.path.isfile(line):
+                raise Exception(line + ' does not exist!')
+            images.append(os.path.abspath(line))
+    return images
 
 def apply_argument_parser(argumentsParser, options=None):
     """ Apply the argument parser. """

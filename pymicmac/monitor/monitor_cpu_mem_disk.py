@@ -11,11 +11,22 @@ def disk_usage(path):
     used = (st.f_blocks - st.f_bfree) * st.f_frsize
     return (total, used, free)
 
+def getHostName():
+    return os.popen('hostname').read().strip()
+
+def getNumCores():
+    return int(os.popen('nproc').read())
+
+def getTotalMemGB():
+    return int(os.popen('free -b').read().split('\n')[1].split()[1]) / 1073741824
+
 def run(osExeCommand, monitorFile, diskMountPoint):
     o = open(monitorFile,'w')
     o2 = open(monitorFile + '.disk','w')
 
-    t0 = time.time()
+    o.write('#Host name: ' + str(getHostName()) + '\n')
+    o.write('#Number cores: ' + str(getNumCores()) + '\n')
+    o.write('#System memory [GB]: ' + str(getTotalMemGB()) + '\n')
 
     child = multiprocessing.Process(target=executeScript, args=(osExeCommand,))
     child.start()
@@ -35,9 +46,9 @@ def run(osExeCommand, monitorFile, diskMountPoint):
                 m+=float(f[9])
         if (counter % 50) == 0:
             (total, used, free) = disk_usage(diskMountPoint)
-            o2.write(("%0.2f" % (ti-t0)) + ' ' + str(total) + ' ' + str(used) + ' ' + str(free) + '\n')
+            o2.write(("%0.2f" % ti) + ' ' + str(total) + ' ' + str(used) + ' ' + str(free) + '\n')
             o2.flush()
-        o.write(("%0.2f" % (ti-t0)) + ' ' + ("%0.2f" % c) + ' ' + ("%0.2f" % m) + '\n')
+        o.write(("%0.2f" % ti) + ' ' + ("%0.2f" % c) + ' ' + ("%0.2f" % m) + '\n')
         o.flush()
         child.join(1)
         counter+=1

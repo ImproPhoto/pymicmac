@@ -1,5 +1,2 @@
-from pymicmac.workflow import run_param_estimation
-
-run_param_estimation.run('TestWorkflow', "JPG",
-                         'estimation_workflow.xml',
-                          False, False)
+from pymicmac.workflow import run_workflow
+run_workflow.run('list.txt', 'param-estimation', 'param-estimation.xml', False, False)

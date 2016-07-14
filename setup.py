@@ -15,7 +15,7 @@ except:
     sys.exit(1)
 
 setup(
-    name='PyMicMac',
+    name='pymicmac',
     version='0.1dev',
     packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.monitor', 'pymicmac.noodles', 'pymicmac.other', 'pymicmac.workflow', 'pymicmac.xmlmm'],
     license='',

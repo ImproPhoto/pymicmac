@@ -14,7 +14,7 @@ def run(inputFolder, outputFolder):
 
 def argument_parser():
    # define argument menu
-    description = ""
+    description = "Combine Homol folders"
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
     parser.add_argument('-i','--inputFolder',default='', help='A folder containing all the homol folders to be combined', type=str, required=True)

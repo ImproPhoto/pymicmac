@@ -1,21 +1,22 @@
 <MicMacConfiguration>
   <Component>
     <name>TestLib NO_AllOri2Im</name>
-    <options>".*JPG" Quick=1</options>
+    <options>".*jpg" Quick=1</options>
+    <toLink>tie-point-detection/Homol</toLink>
   </Component>
   <Component>
     <name>RedTieP</name>
-    <options>".*JPG" NumPointsX=12 NumPointsY=12 Adaptive=0 ThresholdAccMult=0.5 SortByNum=0 Desc=0 ExpSubCom=1</options>
+    <options>".*jpg" NumPointsX=12 NumPointsY=12 Adaptive=0 ThresholdAccMult=0.5 SortByNum=0 Desc=0 ExpSubCom=1</options>
     <noodlesParallel>4</noodlesParallel>
   </Component>
   <Component>
     <name>Tapas</name>
-    <options>Fraser ".*JPG" InCal=IniCal Out=TapasOut</options>
+    <options>Fraser ".*jpg" InCal=IniCal Out=TapasOut</options>
     <toLink>Ori-IniCal</toLink>
   </Component>
   <Component>
     <name>GCPBascule</name>
-    <options>".*JPG" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml</options>
+    <options>".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml</options>
     <toLink>gcp_List3D.xml coord_List2D.xml</toLink>
   </Component>
 </MicMacConfiguration>

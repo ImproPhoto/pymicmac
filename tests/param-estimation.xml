@@ -1,0 +1,12 @@
+<MicMacConfiguration>
+  <Component>
+    <name> Tapas </name>
+    <options> Fraser ".*jpg" Out=TapasOut </options>
+    <toLink>tie-point-detection/Homol</toLink>
+  </Component>
+  <!-- <Component>
+    <name> GCPBascule </name>
+    <options> ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml </options>
+    <toLink> gcp_List3D.xml coord_List2D.xml </toLink>
+  </Component> -->
+</MicMacConfiguration>

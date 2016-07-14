@@ -1,0 +1,7 @@
+<MicMacConfiguration>
+  <Component>
+    <name> Tapioca </name>
+    <options> All ".*jpg" -1 </options>
+    <!-- <options> File GrapheHom.xml -1 </options> -->
+  </Component>
+</MicMacConfiguration>

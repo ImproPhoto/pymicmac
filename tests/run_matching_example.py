@@ -1,3 +1,2 @@
-from pymicmac.workflow import run_matching
-
-run_matching.run('TestWorkflow', 'TapasOut', 'matching.xml', False)
+from pymicmac.workflow import run_workflow
+run_workflow.run('list.txt', 'matching', 'matching.xml', False, False)

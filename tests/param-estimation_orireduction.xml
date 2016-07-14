@@ -1,0 +1,20 @@
+<MicMacConfiguration>
+  <Component>
+    <name>Martini</name>
+    <options>".*jpg" OriCalib=IniCal</options>
+    <toLink>tie-point-detection/Homol Ori-IniCal</toLink>
+  </Component>
+  <Component>
+    <name>OriRedTieP</name>
+    <options>".*jpg" Prec2P=20.0 SzTile=2000 DistPMul=40 MVG=1.5 OriCalib=IniCal</options>
+  </Component>
+  <Component>
+    <name>Tapas</name>
+    <options>Fraser ".*jpg" InCal=MartiniIniCal InOri=MartiniIniCal Out=TapasOut</options>
+  </Component>
+  <Component>
+    <name>GCPBascule</name>
+    <options>".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml</options>
+    <toLink>gcp_List3D.xml coord_List2D.xml</toLink>
+  </Component>
+</MicMacConfiguration>
