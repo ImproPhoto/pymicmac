@@ -12,11 +12,12 @@ def run(dataDir, configFile, setEnvironmentFileToSource, remoteExeDir, localOutD
     executable = scriptsParentPath + '/run_distributed_workflow_sge_job.sh'
     executable_python = scriptsParentPath + '/run_distributed_workflow_sge_job.py'
 
+    configFileAbsPath = os.path.abspath(configFile)
     dataDirAbsPath = os.path.abspath(dataDir)
     localOutDirAbsPath = os.path.abspath(localOutDir)
 
     for i in range(numComponents):
-        print('qsub ' + qsuboptions + ' ' + executable + ' ' + setEnvironmentFileToSource + ' ' + executable_python + ' ' + configFile + ' ' + str(i) + ' ' + dataDirAbsPath + ' ' + remoteExeDir + ' ' + localOutDirAbsPath)
+        print('qsub ' + qsuboptions + ' ' + executable + ' ' + setEnvironmentFileToSource + ' ' + executable_python + ' ' + configFileAbsPath + ' ' + str(i) + ' ' + dataDirAbsPath + ' ' + remoteExeDir + ' ' + localOutDirAbsPath)
 
 
 def argument_parser():
@@ -28,7 +29,7 @@ def argument_parser():
     parser.add_argument('-s', '--source',default='', help='Set environment file (this file is sourced before the remote execution of any command, the file must be in a shared folder and be accessible from the cluster nodes)', type=str, required=True)
     parser.add_argument('-r', '--remoteExeDir',default='', help='Remote execution directory. Each command will be executed in a cluster node in a folder like <remoteExeDir>/<commandId>', type=str, required=True)
     parser.add_argument('-o', '--localOutDir',default='', help='Local output folder. The execution of each command of the workflow will be done in a remote folder in a SGE node, but the output specified in the configuration XML will be copied to a local folder <localOutDir>/<commandId>', type=str, required=True)
-    parser.add_argument('--qsuboptions',default='"-l h_rt=00:15:00 -N dpymicmac"', help='Options to pass to qsub command. At least must include a -N <name> [default is "-l h_rt=00:15:00 -N dpymicmac"]', type=str, required=True)
+    parser.add_argument('--qsuboptions',default='-l h_rt=00:15:00 -N dpymicmac', help='Options to pass to qsub command. At least must include a -N <name> [default is "-l h_rt=00:15:00 -N dpymicmac"]', type=str, required=False)
     return parser
 
 if __name__ == "__main__":
