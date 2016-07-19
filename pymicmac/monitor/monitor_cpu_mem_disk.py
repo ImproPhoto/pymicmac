@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 import subprocess,sys,time,multiprocessing,os
 
-def executeScript(osExeCommand):
-    os.system(osExeCommand)
+def executeScript(osExeCommand, logFile):
+    sys.stdout = open(logFile,'w')
+    sys.stderr = sys.stdout
+    subprocess.Popen(osExeCommand, shell = True, stdout=sys.stdout, stderr=sys.stdout).communicate()
 
 def disk_usage(path):
     st = os.statvfs(path)
@@ -20,7 +22,7 @@ def getNumCores():
 def getTotalMemGB():
     return int(os.popen('free -b').read().split('\n')[1].split()[1]) / 1073741824
 
-def run(osExeCommand, monitorFile, diskMountPoint):
+def run(osExeCommand, logFile, monitorFile, diskMountPoint):
     o = open(monitorFile,'w')
     o2 = open(monitorFile + '.disk','w')
 
@@ -28,7 +30,7 @@ def run(osExeCommand, monitorFile, diskMountPoint):
     o.write('#Number cores: ' + str(getNumCores()) + '\n')
     o.write('#System memory [GB]: ' + str(getTotalMemGB()) + '\n')
 
-    child = multiprocessing.Process(target=executeScript, args=(osExeCommand,))
+    child = multiprocessing.Process(target=executeScript, args=(osExeCommand,logFile))
     child.start()
 
     counter = 0

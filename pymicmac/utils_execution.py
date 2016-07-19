@@ -31,24 +31,25 @@ def executeCommandMonitor(commandId, command, diskPath, onlyPrint=False):
         return
 
     # Define the names of the script that executes the command, the log file and the monitor file
-    eFileName = commandId.replace(' ', '_') + '.sh'
-    logFile = commandId.replace(' ', '_') + '.log'
+    # eFileName = commandId.replace(' ', '_') + '.sh'
+    logFileName = commandId.replace(' ', '_') + '.log'
     monitorLogFileName = commandId.replace(' ', '_') + '.mon'
 
     #Remove log file if already exists
-    if os.path.isfile(logFile):
-        os.system('rm ' + logFile)
+    if os.path.isfile(logFileName):
+        os.system('rm ' + logFileName)
 
     # Create script for command execution
-    eFile = open(eFileName, 'w')
-    eFile.write('#!/bin/bash\n')
-    eFile.write(command  + ' >> ' + logFile + ' 2>&1')
-    eFile.close()
+    # eFile = open(eFileName, 'w')
+    # eFile.write('#!/bin/bash\n')
+    # eFile.write(command)
+    # eFile.close()
 
     #Give execution rights
-    os.chmod(eFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
+    # os.chmod(eFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
     # Run the tool that executes the command with the monitoring of CPU and MEM
-    monitor_cpu_mem_disk.run('./' + eFileName, monitorLogFileName, diskPath)
+    # monitor_cpu_mem_disk.run('./' + eFileName, logFileName, monitorLogFileName, diskPath)
+    monitor_cpu_mem_disk.run(command, logFileName, monitorLogFileName, diskPath)
     # TODO: if execution folder is in different file system that source data, right now we only monitor raw data usage
 
 def getSize(absPath):
