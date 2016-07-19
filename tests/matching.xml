@@ -1,11 +1,11 @@
 <MicMacConfiguration>
   <Component>
-    <name> Malt </name>
-    <options> GeomImage ".*jpg" TapasOut "Master=1.jpg" "DirMEC=Results" UseTA=1 ZoomF=1 ZoomI=32 Purge=true </options>
-    <toLink> param-estimation/Ori-TapasOut</toLink>
+    <id> Malt </id>
+    <command> mm3d Malt GeomImage ".*jpg" TapasOut "Master=1.jpg" "DirMEC=Results" UseTA=1 ZoomF=1 ZoomI=32 Purge=true </command>
+    <require> param-estimation/Ori-TapasOut</require>
   </Component>
   <Component>
-    <name> Nuage2Ply </name>
-    <options> "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg" Out=1.ply</options>
+    <id> Nuage2Ply </id>
+    <command> mm3d Nuage2Ply "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg" Out=1.ply</command>
   </Component>
 </MicMacConfiguration>

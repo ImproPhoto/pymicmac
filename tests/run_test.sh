@@ -7,6 +7,6 @@
 #      <ShortName> Aquaris E5 HD </ShortName>
 # </CameraEntry>
 
-python ../pymicmac/workflow/run_workflow.py -i list.txt -n tie-point-detection -c tie-point-detection.xml
-python ../pymicmac/workflow/run_workflow.py -i list.txt -n param-estimation -c param-estimation.xml
-python ../pymicmac/workflow/run_workflow.py -i list.txt -n matching -c matching.xml
+python ../pymicmac/workflow/run_workflow.py -i list.txt -e tie-point-detection -c tie-point-detection.xml
+python ../pymicmac/workflow/run_workflow.py -i list.txt -e param-estimation -c param-estimation.xml
+python ../pymicmac/workflow/run_workflow.py -i list.txt -e matching -c matching.xml

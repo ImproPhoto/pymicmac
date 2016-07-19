@@ -25,15 +25,15 @@ def readGCPXMLFile(xmlFile):
             gcpsXYZ[gcp] = (x, y, z)
     return (gcpsXYZ, cpsXYZ)
 
-def executeCommandMonitor(commandName, command, diskPath, onlyPrint=False):
+def executeCommandMonitor(commandId, command, diskPath, onlyPrint=False):
     if onlyPrint:
         print(command)
         return
 
     # Define the names of the script that executes the command, the log file and the monitor file
-    eFileName = commandName.replace(' ', '_') + '.sh'
-    logFile = commandName.replace(' ', '_') + '.log'
-    monitorLogFileName = commandName.replace(' ', '_') + '.mon'
+    eFileName = commandId.replace(' ', '_') + '.sh'
+    logFile = commandId.replace(' ', '_') + '.log'
+    monitorLogFileName = commandId.replace(' ', '_') + '.mon'
 
     #Remove log file if already exists
     if os.path.isfile(logFile):
@@ -49,6 +49,7 @@ def executeCommandMonitor(commandName, command, diskPath, onlyPrint=False):
     os.chmod(eFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
     # Run the tool that executes the command with the monitoring of CPU and MEM
     monitor_cpu_mem_disk.run('./' + eFileName, monitorLogFileName, diskPath)
+    # TODO: if execution folder is in different file system that source data, right now we only monitor raw data usage
 
 def getSize(absPath):
     (out,err) = subprocess.Popen('du -sb ' + absPath, shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
@@ -58,6 +59,7 @@ def getSize(absPath):
         return -1
 
 def initExecutionFolder(imagesAbsPaths, executionFolder, mmComponents):
+    cwd = os.getcwd()
     # Create directory for this execution
     executionFolderAbsPath = os.path.abspath(executionFolder)
     if os.path.exists(executionFolderAbsPath):
@@ -68,29 +70,37 @@ def initExecutionFolder(imagesAbsPaths, executionFolder, mmComponents):
     for imageAbsPath in imagesAbsPaths:
         os.symlink(imageAbsPath, os.path.join(executionFolderAbsPath, os.path.basename(imageAbsPath)))
 
-    # Create links for the rest of files/folder specifed in mmComponents/toLink XML
+    # Create links for the rest of files/folder specifed in mmComponents/required XML
     for mmComponent in mmComponents:
-        typeToLinkComponent = mmComponent.find("toLink")
+        typeToLinkComponent = mmComponent.find("require")
         if typeToLinkComponent != None:
             elements = typeToLinkComponent.text.strip().split()
             for element in elements:
                 if element.endswith('/'):
                     element = element[:-1]
-                elementAbsPath = os.path.abspath(element)
+                if element.startswith('/'):
+                    elementAbsPath = element
+                else:
+                    elementAbsPath = cwd + '/' + element
                 if os.path.isfile(elementAbsPath) or os.path.isdir(elementAbsPath):
                     os.symlink(elementAbsPath , os.path.join(executionFolderAbsPath, os.path.basename(elementAbsPath)))
                 else:
                     raise Exception(element + ' does not exist!')
 
 def getImages(imagesListFile):
+    cwd = os.getcwd()
     images = []
     if not os.path.isfile(imagesListFile):
         raise Exception(imagesListFile + ' does not exist!')
     for line in open(imagesListFile, 'r').read().split('\n'):
         if line != '':
-            if not os.path.isfile(line):
-                raise Exception(line + ' does not exist!')
-            images.append(os.path.abspath(line))
+            if line.startswith('/'):
+                imageAbsPath = line
+            else:
+                imageAbsPath = cwd + '/' + line
+            if not os.path.isfile(imageAbsPath):
+                raise Exception(imageAbsPath + ' does not exist!')
+            images.append(imageAbsPath)
     return images
 
 def apply_argument_parser(argumentsParser, options=None):

@@ -41,10 +41,10 @@ When executing the tool and before executing the specified MicMac processes, an 
 
 ### XML configuration file
 
-The XML file must contain a root tag `<MicMacConfiguration>`. Then, for each component/command of the chain we have to add a XML element `<Component>` which must have as child elements at least a `<name>` and a `<options>` elements.
+The XML file must contain a root tag `<MicMacConfiguration>`. Then, for each component/command of the chain we have to add a XML element `<Component>` which must have as child elements at least a `<id>` and a `<command>` elements.
 
 Since the tool will be executed in an independent execution folder, if a component requires some files/folders other the images,
-the required files/folders have to be specified with `<toLink>` element (if a previous tool in the chain already 'linked' a file/folder there is no need to do it again). (Soft) links will be created in the execution folder for the specified files/folders. For example, the first tool of the parameters estimation chain must for sure link to the Homol folder generated in the tie-points detection.
+the required files/folders have to be specified with `<require>` element (if a previous tool in the chain already 'linked' a file/folder there is no need to do it again). (Soft) links will be created in the execution folder for the specified files/folders. For example, the first tool of the parameters estimation chain must for sure link to the Homol folder generated in the tie-points detection.
 
 There is a special case for the `RedTieP` tool which may be used in during parameters estimation. If the component is `RedTieP` and `ExpSubCom=1` is specified as option, this means Noodles needs to run, then please specify the number of processes to use with the XML element `<noodlesNumProc>`. See example in `tests/estimation_workflow_tiepoint_reduction.xml`.
 
@@ -54,19 +54,20 @@ Some XML examples:
 ```
 <MicMacConfiguration>
   <Component>
-    <name> Tapioca </name>
-    <options> All ".*jpg" -1 </options>
+    <id> Tapioca </id>
+    <command> mm3d Tapioca All ".*jpg" -1 </command>
   </Component>
 </MicMacConfiguration>
+
 ```
 
 - Parameter estimation:
 ```
 <MicMacConfiguration>
   <Component>
-    <name> Tapas </name>
-    <options> Fraser ".*jpg" Out=TapasOut </options>
-    <toLink>tie-point-detection/Homol</toLink>
+    <id> Tapas </id>
+    <command> mm3d Tapas Fraser ".*jpg" Out=TapasOut </command>
+    <require>tie-point-detection/Homol</require>
   </Component>
 </MicMacConfiguration>
 ```
@@ -75,22 +76,22 @@ Some XML examples:
 ```
 <MicMacConfiguration>
   <Component>
-    <name> Malt </name>
-    <options> GeomImage ".*jpg" TapasOut "Master=1.jpg" "DirMEC=Results" UseTA=1 ZoomF=1 ZoomI=32 Purge=true </options>
-    <toLink> param-estimation/Ori-TapasOut</toLink>
+    <id> Malt </id>
+    <command> mm3d Malt GeomImage ".*jpg" TapasOut "Master=1.jpg" "DirMEC=Results" UseTA=1 ZoomF=1 ZoomI=32 Purge=true </command>
+    <require> param-estimation/Ori-TapasOut</require>
   </Component>
   <Component>
-    <name> Nuage2Ply </name>
-    <options> "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg" Out=1.ply</options>
+    <id> Nuage2Ply </id>
+    <command> mm3d Nuage2Ply "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg" Out=1.ply</command>
   </Component>
 </MicMacConfiguration>
 ```
 
 Following the examples above, we could execute a whole workflow with:
 ```
-python pymicmac/workflow/run_workflow.py -i list.txt -n tie-point-detection -c tie-point-detection.xml
-python pymicmac/workflow/run_workflow.py -i list.txt -n param-estimation -c param-estimation.xml
-python pymicmac/workflow/run_workflow.py -i list.txt -n matching -c matching.xml
+python pymicmac/workflow/run_workflow.py -i list.txt -e tie-point-detection -c tie-point-detection.xml
+python pymicmac/workflow/run_workflow.py -i list.txt -e param-estimation -c param-estimation.xml
+python pymicmac/workflow/run_workflow.py -i list.txt -e matching -c matching.xml
 ```
 
 ## Large image sets
@@ -102,10 +103,6 @@ For more information about distributed computing and tie-points reduction, see o
 ### Distributed computing
 
 TBD
-<!--
-If you have access to a SGE cluster and your image set has Geotagging information you may be interested on checking out the `workflow/run_tiepoint_detection_geotag_sge_cluster` tools.
-
-Other solutions for more generic distributed computing are being explored (check again in few days/weeks). -->
 
 ### Tie-points reduction
 
