@@ -75,7 +75,7 @@ for f in (logFile, monitorFile, monitorDiskFile):
 for outputElement in outputElements:
     if os.path.isfile(outputElement):
         os.system('cp ' + outputElement + ' ' + commandLocalOutDirAbsPath)
-    elif os.path.isdir(requiredElementAbsPath):
+    elif os.path.isdir(outputElement):
         os.system('cp -r ' + outputElement + ' ' + commandLocalOutDirAbsPath)
     else:
         raise Exception(outputElement + " could not be found!")
