@@ -12,7 +12,7 @@ def run(inputFolder, outputFolder):
         tapiocaCommandIdAbsPath = inputFolder + '/' + tapiocaCommandId
         tapiocaCommandIdHomolAbsPath = tapiocaCommandIdAbsPath + '/Homol'
         if os.path.isdir(tapiocaCommandIdHomolAbsPath) and len(os.listdir(tapiocaCommandIdHomolAbsPath)):
-            os.system('cp -r ' + tapiocaCommandIdAbsPath + '/* ' + outputFolder)
+            os.system('cp -r ' +  tapiocaCommandIdHomolAbsPath + '/* ' + outputFolder)
         else:
             print('WARNING: could not find tie-points in ' + tapiocaCommandIdHomolAbsPath)
             
