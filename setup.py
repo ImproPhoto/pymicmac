@@ -24,6 +24,6 @@ setup(
     author_email='o.rubi@esciencecenter.nl',
     url='https://github.com/pymicmac/pymicmac',
     install_requires=[
-          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles'
+          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles', 'pandas'
     ],
 )
