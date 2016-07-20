@@ -27,6 +27,8 @@ def run(images, exeDir, configFile, onlyShowCommands, noInit):
     for mmComponent in mmComponents:
         # Run component of workflow
         commandId = mmComponent.find("id").text.strip()
+        if commandId.count(' '):
+            raise Exception('Command IDs cannot contain whitespaces!')
         command = mmComponent.find("command").text.strip()
 
         utils_execution.executeCommandMonitor(commandId, command, dataAbsPath, onlyShowCommands)

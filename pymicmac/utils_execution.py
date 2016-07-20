@@ -26,31 +26,26 @@ def readGCPXMLFile(xmlFile):
     return (gcpsXYZ, cpsXYZ)
 
 def executeCommandMonitor(commandId, command, diskPath, onlyPrint=False):
-    if onlyPrint:
-        print(command)
-        return
-
     # Define the names of the script that executes the command, the log file and the monitor file
-    # eFileName = commandId.replace(' ', '_') + '.sh'
-    logFileName = commandId.replace(' ', '_') + '.log'
-    monitorLogFileName = commandId.replace(' ', '_') + '.mon'
+    # eFileName = commandId + '.sh'
+    logFileName = commandId + '.log'
+    monitorLogFileName = commandId + '.mon'
+    monitorDiskLogFileName = commandId + '.mon.disk'
 
     #Remove log file if already exists
-    if os.path.isfile(logFileName):
-        os.system('rm ' + logFileName)
+    for f in (logFileName,monitorLogFileName,monitorDiskLogFileName):
+        if os.path.isfile(f):
+            os.system('rm ' + f)
 
-    # Create script for command execution
-    # eFile = open(eFileName, 'w')
-    # eFile.write('#!/bin/bash\n')
-    # eFile.write(command)
-    # eFile.close()
-
-    #Give execution rights
-    # os.chmod(eFileName, stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR)
-    # Run the tool that executes the command with the monitoring of CPU and MEM
-    # monitor_cpu_mem_disk.run('./' + eFileName, logFileName, monitorLogFileName, diskPath)
-    monitor_cpu_mem_disk.run(command, logFileName, monitorLogFileName, diskPath)
-    # TODO: if execution folder is in different file system that source data, right now we only monitor raw data usage
+    if onlyPrint:
+        print(command)
+        os.system('touch ' + logFileName)
+        os.system('touch ' + monitorLogFileName)
+        os.system('touch ' + monitorDiskLogFileName)
+    else:    
+        monitor_cpu_mem_disk.run(command, logFileName, monitorLogFileName, monitorDiskLogFileName, diskPath)
+        # TODO: if execution folder is in different file system that source data, right now we only monitor raw data usage
+    return (logFileName,monitorLogFileName,monitorDiskLogFileName)
 
 def getSize(absPath):
     (out,err) = subprocess.Popen('du -sb ' + absPath, shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()

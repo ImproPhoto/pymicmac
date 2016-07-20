@@ -22,9 +22,9 @@ def getNumCores():
 def getTotalMemGB():
     return int(os.popen('free -b').read().split('\n')[1].split()[1]) / 1073741824
 
-def run(osExeCommand, logFile, monitorFile, diskMountPoint):
+def run(osExeCommand, logFile, monitorFile, monitorDiskFile, diskMountPoint):
     o = open(monitorFile,'w')
-    o2 = open(monitorFile + '.disk','w')
+    o2 = open(monitorDiskFile,'w')
 
     o.write('#Host name: ' + str(getHostName()) + '\n')
     o.write('#Number cores: ' + str(getNumCores()) + '\n')

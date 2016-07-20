@@ -47,7 +47,11 @@ os.makedirs(commandLocalOutDirAbsPath)
 # Copy all the images from the data directory (in the shared folder) to the local one
 for image in listImages:
     if image != '':
-        os.system('cp ' + dataDirAbsPath + '/' + image + ' .')
+        imageAbsPath = dataDirAbsPath + '/' + image
+        if os.path.isfile(imageAbsPath):
+            os.system('cp ' + imageAbsPath + ' .')
+        else:
+            raise Exception(imageAbsPath + " could not be found!")
 # Copy other required files and folders in the data directory
 for requiredElement in requiredElements:
     requiredElementAbsPath =  dataDirAbsPath + '/' + requiredElement
@@ -59,10 +63,10 @@ for requiredElement in requiredElements:
         raise Exception(requiredElementAbsPath + " could not be found!")
 
 # Run the execution of the command (which includes cpu, mem and disk monitoring)
-utils_execution.executeCommandMonitor(commandId, command, lwd, True)
+(logFile, monitorFile, monitorDiskFile) = utils_execution.executeCommandMonitor(commandId, command, lwd, False)
 
 # Copy the monitor files back to the output dir in the shared folder
-for f in ( commandId + '.log ' , commandId + '.mon ', commandId + '.mon.disk '):
+for f in (logFile, monitorFile, monitorDiskFile):
     if os.path.isfile(f):
         os.system('cp ' + f + ' ' + commandLocalOutDirAbsPath)
     else:
