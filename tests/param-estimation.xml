@@ -1,4 +1,4 @@
-<MicMacConfiguration>
+<MicMacWorkflow>
   <Component>
     <id> Tapas </id>
     <command> mm3d Tapas Fraser ".*jpg" Out=TapasOut </command>
@@ -9,4 +9,4 @@
     <command> mm3d GCPBascule ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml </command>
     <require> gcp_List3D.xml coord_List2D.xml </require>
   </Component> -->
-</MicMacConfiguration>
+</MicMacWorkflow>

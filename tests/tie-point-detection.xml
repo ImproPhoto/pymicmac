@@ -1,7 +1,7 @@
-<MicMacConfiguration>
+<MicMacWorkflow>
   <Component>
     <id> Tapioca </id>
     <command> mm3d Tapioca All ".*jpg" -1 </command>
     <!-- <command> mm3d Tapioca File GrapheHom.xml -1 </command> -->
   </Component>
-</MicMacConfiguration>
+</MicMacWorkflow>

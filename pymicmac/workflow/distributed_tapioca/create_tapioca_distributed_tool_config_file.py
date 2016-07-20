@@ -26,7 +26,7 @@ def run(inputFile, outputFile, outputFolder, num):
 
     # Create output file
     oFile = open(outputFileAbsPath, 'w')
-    rootOutput = etree.Element('MicMacConfiguration')
+    rootOutput = etree.Element('MicMacDistributedTool')
 
     pairs = e.findall('Cple')
     numPairs = len(pairs)

@@ -1,4 +1,4 @@
-<MicMacConfiguration>
+<MicMacWorkflow>
   <Component>
     <id>Martini</id>
     <command>mm3d Martini ".*jpg" OriCalib=IniCal</command>
@@ -17,4 +17,4 @@
     <command>mm3d GCPBascule ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml</command>
     <require>gcp_List3D.xml coord_List2D.xml</require>
   </Component>
-</MicMacConfiguration>
+</MicMacWorkflow>

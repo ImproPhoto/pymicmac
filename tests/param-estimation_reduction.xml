@@ -1,4 +1,4 @@
-<MicMacConfiguration>
+<MicMacWorkflow>
   <Component>
     <id>NO_AllOri2Im</id>
     <command>mm3d TestLib NO_AllOri2Im ".*jpg" Quick=1</command>
@@ -19,4 +19,4 @@
     <command>mm3d GCPBascule ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml</command>
     <require>gcp_List3D.xml coord_List2D.xml</require>
   </Component>
-</MicMacConfiguration>
+</MicMacWorkflow>

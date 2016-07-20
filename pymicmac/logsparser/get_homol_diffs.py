@@ -31,7 +31,7 @@ def argument_parser():
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
     parser.add_argument('-o','--original',default='', help='Original Homol folder', type=str, required=True)
-    parser.add_argument('-c','--compare',default='', help='Comma-separated Homol folders to compare', type=str, required=True)
+    parser.add_argument('-c','--compare',default='', help='Comma-separated Homol folder to compare', type=str, required=True)
     return parser
 
 if __name__ == "__main__":
