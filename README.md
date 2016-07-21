@@ -32,15 +32,15 @@ For now pymicmac works only in Linux systems. Requires Python 3.5.
 
 ## Instructions
 
-The tool `workflow/run_workflow.py` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-point detection, (2) parameters estimation and (3) matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`).
+The tool `workflow/run_workflow.py` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-point detection, (2) parameters estimation and (3) matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_workflow_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`).
 
-Which MicMac commands are executed is specified with a Workflow XML configuration file. The CPU/MEM/disk usage for each tool will be monitored.
+Which MicMac commands are executed is specified with a Workflow XML configuration file.
 
 ### Workflow XML configuration file
 
 The Workflow XML configuration file file must contain a root tag `<Workflow>`. Then, for each component/command of the workflow we have to add a XML element `<Component>` which must have as child elements at least a `<id>` and a `<command>` elements.
 
-Since the workflow will be executed in an independent execution folder, if a component requires some files/folders, the required files/folders have to be specified with `<require>` or `<requirelist>` tags. (Soft) links are created in the execution folder for the specified files/folders. Using `<require>` is for short list of required files/folders and they are specified comma-separated. Using `<requirelist>` is when the list of required files/folders is very long, in which case they are specified in a separate ASCII file, one file/folder per line. Both `<require>` and `<requirelist>` can be simultaneously used.  For example, the first tool of the parameters estimation chain must for sure link to the list of images and to the Homol folder generated in the tie-points detection. So, we can use `<requirelist>` to specify a list of images, and `<require>` for the Homol folder (or specify all in the `<requirelist>`).
+Since the workflow will be executed in an independent execution folder, if a component requires some files/folders, these have to be specified with `<require>` or `<requirelist>` tags. (Soft) links are created in the execution folder for the specified files/folders. Using `<require>` is recommended for small number of required files/folders, and they are specified comma-separated. Using `<requirelist>` is recommended when the number of required files/folders is large. In this case they are specified in a separate ASCII file, one file/folder per line. Both `<require>` and `<requirelist>` can be simultaneously used.  For example, the first tool of the parameters estimation chain must for sure link to the list of images and to the Homol folder generated in the tie-points detection. So, we can use `<requirelist>` to specify a file with a list of images, and `<require>` for the Homol folder (or specify all in a file via `<requirelist>`).
 
 It is important to notice that since all the commands of the workflow are executed in the same execution folder, if a previous tool in the workflow already 'linked' a file/folder (using `<require>` or `<requirelist>`) there is no need to do it again. So, only the first command in the workflow must link the images.
 
@@ -94,7 +94,7 @@ python pymicmac/workflow/run_workflow.py -e matching -c matching.xml
 
 ### Monitoring
 
-For each executed command of the specified in the Workflow XML configuration file the CPU, memory and disk usage are monitored. Some monitoring files are created in the execution folder. Concretely a .mon file, a .mon.disk and a .log file. The first one contains CPU/MEM usage monitoring, the second one contains disk usage monitoring and the third one is the log produced by the executed command. To get statistics of .mon files use `monitor/get_monitor_nums.py` and to get a plot use `monitor/plot_cpu_mem.py`. To plot the .mon.disk use `monitor/plot_disk.py`. In the `logsparser` and `logsplotter` packages there are tools to extract information and do plots from the log files of some of the commands (currently of `RedTieP`, `Tapas`, `Campari` and `GCPBascule`).
+For each executed command of the specified in the Workflow XML configuration file, the CPU, memory and disk usage are monitored. Monitoring files are created in the execution folder. Concretely a .mon file, a .mon.disk and a .log file. The first one contains CPU/MEM usage monitoring, the second one contains disk usage monitoring and the third one is the log produced by the executed command. To get statistics of .mon files use `monitor/get_monitor_nums.py` and to get a plot use `monitor/plot_cpu_mem.py`. To plot the .mon.disk use `monitor/plot_disk.py`. In the `logsparser` and `logsplotter` packages there are tools to extract information and do plots from the log files of some of the commands (currently of `RedTieP`, `Tapas`, `Campari` and `GCPBascule`).
 
 ## Large image sets
 
@@ -112,7 +112,7 @@ To characterize the distributed computing of tools like Tapioca we use a Distrib
 
 The Distributed Tool XML configuration file must contain a root tag `<DistributedTool>`. Then, for each chunk of the distributed tool we have to add a XML element `<Component>` which must have as child elements the `<id>` and a `<command>` elements. This is the same as the Workflow XML configuration file format. However, in this case each `<Component>` tag must also contain a `<output>`, which determines which files or folder are the output. Like in the Workflow XML configuration file format, `<requirelist>` and `<require>` are also used to define the required data by each command.
 
-When running this distributed computing workflow each command is executed in a different execution folder and possibly in a different computer. For each command, the required data is copied from the location where the workflow run is lunched to the remote execution folder, and then the command is executed. When the command is finished the elements indicated in `<output>` are copied back to the location where the workflow run was lunch.
+When running a Distributed Tool, each command is executed in a different execution folder and possibly in a different computer. For each command, the required data is copied/linked from the location where the workflow run is lunched to the remote execution folder, and then the command is executed. When the command is finished the elements indicated in `<output>` are copied back to the location where the workflow run was lunch.
 
 Note that in this case, the data indicated by `<require>` and `<requirelist>` is not shared between different commands execution. So, in each command `<require>` and `<requirelist>` must indicate ALL the required data. This is different than in the Worflow execution where the required data can be shared by other commands since they are all executed in the same execution folder.
 
@@ -139,9 +139,11 @@ An example Distributed Tool XML configuration file follows. In this case, we hav
 
 How the data is copied from the location where the distributed tool is lunched to the remote execution folders (and viceversa) depends on the used hardware systems.
 
-In [Implemented MicMac Tools](#implemented-micmac-tools) we detail the current MicMac tools where we have implemented a distributed version. Currently Tapioca is supported.
+In [Implemented MicMac Tools](#implemented-micmac-tools) we detail the current MicMac tools for which we have implemented a distributed version. Currently Tapioca is supported.
 
-In [Hardware systems](#hardware-systems) we detail which systems are supported. Currently running in SGE clusters is supported. SGE clusters have Grid Engine batch queueing system.
+In [Hardware systems](#hardware-systems) we detail which systems are supported. Currently running in the local computer and in SGE clusters is supported. SGE clusters have Grid Engine batch queueing system.
+
+The tool `monitor/plot_cpu_mem.py` can be used to get a plot of the CPU and MEM usage of the Distributed Tool (parallel) execution.
 
 #### Implemented MicMac Tools
 

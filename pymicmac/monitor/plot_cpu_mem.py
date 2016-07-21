@@ -1,5 +1,5 @@
  #!/usr/bin/python
-import sys, os, math, glob, argparse
+import sys, os, math, argparse
 import numpy
 import matplotlib.pyplot as plt
 from pymicmac import utils_execution
@@ -14,7 +14,10 @@ def run(inputArgument, resampling, ignoreLargeJumps):
         if resampling == None or resampling < 5:
             raise Exception('Resampling must be higher than 5 if combining monitor files!')
 
-        monFiles = glob.glob(inputArgument + '/*.mon')
+        monFiles = [os.path.join(dirpath, f)
+            for dirpath, dirnames, files in os.walk(inputArgument)
+            for f in files if f.endswith('.mon')]
+
         df_inter_sum = None
         for i in range(len(monFiles)):
             (df, hostname, numcores, memtotal)  = get_monitor_nums.readFile(monFiles[i], resampling, ignoreLargeJumps)
@@ -51,7 +54,7 @@ def argument_parser():
    # define argument menu
     description = "Plot the CPU/MEM usage of a tool executed pymicmac (it is possible to combine .mon file of a tool executed in distributed manner)"
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-i', '--input',default='', help='Input argument. It can be a single .mon file or a folder full of .mon files. In the case of a folder, the .mon files are resampled/interpolated/combined to displaya single graph with the aggregated CPU/MEM usage', type=str, required=True)
+    parser.add_argument('-i', '--input',default='', help='Input argument. It can be a single .mon file or a folder that contain .mon files. In the case of a folder, the .mon files are searched recursively, and the time-series are resampled/interpolated/combined to display a single graph with the aggregated CPU/MEM usage', type=str, required=True)
     parser.add_argument('-r', '--resampling',default=None, help='Resampling of the time series (it input is a folder, resampling must be higher than 5)', type=int, required=False)
     parser.add_argument('--ignoreLargeJumps', default=False, help='If enabled, it ignores large (> 5 seconds) time jumps in the monitor files. Use this for example when you were running your processes in a Virtual Machine and you had to suspend it for a while [default is disabled]', action='store_true')
     return parser
