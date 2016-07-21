@@ -1,12 +1,8 @@
-<MicMacWorkflow>
+<Workflow>
   <Component>
     <id> Tapas </id>
-    <command> mm3d Tapas Fraser ".*jpg" Out=TapasOut </command>
+    <requirelist>list.txt</requirelist>
     <require>tie-point-detection/Homol</require>
+    <command> mm3d Tapas Fraser ".*jpg" Out=TapasOut </command>
   </Component>
-  <!-- <Component>
-    <id> GCPBascule </id>
-    <command> mm3d GCPBascule ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml </command>
-    <require> gcp_List3D.xml coord_List2D.xml </require>
-  </Component> -->
-</MicMacWorkflow>
+</Workflow>

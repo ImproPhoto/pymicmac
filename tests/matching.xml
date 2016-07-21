@@ -1,6 +1,7 @@
-<MicMacWorkflow>
+<Workflow>
   <Component>
     <id> Malt </id>
+    <requirelist>list.txt</requirelist>
     <command> mm3d Malt GeomImage ".*jpg" TapasOut "Master=1.jpg" "DirMEC=Results" UseTA=1 ZoomF=1 ZoomI=32 Purge=true </command>
     <require> param-estimation/Ori-TapasOut</require>
   </Component>
@@ -8,4 +9,4 @@
     <id> Nuage2Ply </id>
     <command> mm3d Nuage2Ply "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg" Out=1.ply</command>
   </Component>
-</MicMacWorkflow>
+</Workflow>

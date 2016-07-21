@@ -17,20 +17,20 @@ e = etree.parse(open(configFile)).getroot()
 c = e.xpath("//id[starts-with(text(),'" + commandIndex + "_')]/parent::*")[0]
 commandId = c.find("id").text.strip()
 command = c.find("command").text.strip()
-imagesListFile = c.find("images").text.strip()
+requiredListFile = c.find("requirelist").text.strip()
 requiredElements= c.find("require").text.strip().split()
 outputElements = c.find("output").text.strip().split()
 print("CommandId: " + commandId)
 print("Command: " + command)
-print("Images list file: " + imagesListFile)
+print("Required list file: " + requiredListFile)
 print("Required: " + ' '.join(requiredElements))
 print("Output: " + ' '.join(outputElements))
 
-# Check image list file can be accesses
-imageListFileAbsPath = dataDirAbsPath + '/' + imagesListFile
-if not os.path.isfile(imageListFileAbsPath):
-    raise Exception(imageListFileAbsPath + " could not be found!")
-listImages = open(imageListFileAbsPath,'r').read().split('\n')
+# Check required list file can be accesses
+requiredListFileAbsPath = dataDirAbsPath + '/' + requiredListFile
+if not os.path.isfile(requiredListFileAbsPath):
+    raise Exception(requiredListFileAbsPath + " could not be found!")
+listRequired = open(requiredListFileAbsPath,'r').read().split('\n')
 
 # Create a local working directory using the specified remoteExeDir
 lwd = remoteExeDir + '/' + commandId
@@ -44,14 +44,14 @@ commandLocalOutDirAbsPath = localOutDirAbsPath + '/' + commandId
 shutil.rmtree(commandLocalOutDirAbsPath, True)
 os.makedirs(commandLocalOutDirAbsPath)
 
-# Copy all the images from the data directory (in the shared folder) to the local one
-for image in listImages:
-    if image != '':
-        imageAbsPath = dataDirAbsPath + '/' + image
-        if os.path.isfile(imageAbsPath):
-            os.system('cp ' + imageAbsPath + ' .')
+# Copy all the required files from the data directory (in the shared folder) to the local one
+for requiredElement in listRequired:
+    if requiredElement != '':
+        requiredElementAbsPath = dataDirAbsPath + '/' + requiredElement
+        if os.path.isfile(requiredElementAbsPath):
+            os.system('cp ' + requiredElementAbsPath + ' .')
         else:
-            raise Exception(imageAbsPath + " could not be found!")
+            raise Exception(requiredElementAbsPath + " could not be found!")
 # Copy other required files and folders in the data directory
 for requiredElement in requiredElements:
     requiredElementAbsPath =  dataDirAbsPath + '/' + requiredElement
@@ -70,7 +70,7 @@ for f in (logFile, monitorFile, monitorDiskFile):
     if os.path.isfile(f):
         os.system('cp ' + f + ' ' + commandLocalOutDirAbsPath)
     else:
-        raise Exception(f + " could not be found!")    
+        raise Exception(f + " could not be found!")
 # Copy other output files and folders back to the output dir in the shared folder
 for outputElement in outputElements:
     if os.path.isfile(outputElement):

@@ -1,20 +1,21 @@
-<MicMacWorkflow>
+<Workflow>
   <Component>
     <id>Martini</id>
+    <requirelist>list.txt</requirelist>
     <command>mm3d Martini ".*jpg" OriCalib=IniCal</command>
     <require>tie-point-detection/Homol Ori-IniCal</require>
   </Component>
   <Component>
     <id>OriRedTieP</id>
-    <command>mm3d OriRedTieP ".*jpg" Prec2P=20.0 SzTile=2000 DistPMul=40 MVG=1.5 OriCalib=IniCal</command>
+    <command>mm3d OriRedTieP ".*jpg" OriCalib=IniCal; rm Homol; mv HomolTiePRed Homol</command>
   </Component>
   <Component>
-    <id>Tapas</id>
-    <command>mm3d Tapas Fraser ".*jpg" InCal=MartiniIniCal InOri=MartiniIniCal Out=TapasOut</command>
+    <id> Tapas </id>
+    <command> mm3d Tapas Fraser ".*jpg" Out=TapasOut InCal=IniCal </command>
   </Component>
-  <Component>
-    <id>GCPBascule</id>
-    <command>mm3d GCPBascule ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml</command>
-    <require>gcp_List3D.xml coord_List2D.xml</require>
-  </Component>
-</MicMacWorkflow>
+  <!-- <Component>
+    <id> GCPBascule </id>
+    <command> mm3d GCPBascule ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml </command>
+    <require> gcp_List3D.xml coord_List2D.xml </require>
+  </Component> -->
+</Workflow>

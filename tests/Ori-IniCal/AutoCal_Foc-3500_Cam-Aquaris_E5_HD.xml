@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<CalibrationInternConique>
+     <KnownConv>eConvApero_DistM2C</KnownConv>
+     <PP>1584 2112</PP>
+     <F>3151.4322860094735</F>
+     <SzIm>3168 4224</SzIm>
+     <CalibDistortion>
+          <ModPhgrStd>
+               <RadialePart>
+                    <CDist>1584 2112</CDist>
+                    <PPaEqPPs>true</PPaEqPPs>
+               </RadialePart>
+          </ModPhgrStd>
+     </CalibDistortion>
+</CalibrationInternConique>

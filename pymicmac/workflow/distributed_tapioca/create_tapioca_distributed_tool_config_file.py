@@ -26,7 +26,7 @@ def run(inputFile, outputFile, outputFolder, num):
 
     # Create output file
     oFile = open(outputFileAbsPath, 'w')
-    rootOutput = etree.Element('MicMacDistributedTool')
+    rootOutput = etree.Element('DistributedTool')
 
     pairs = e.findall('Cple')
     numPairs = len(pairs)
@@ -88,17 +88,17 @@ def run(inputFile, outputFile, outputFolder, num):
             childOutputId.text = str(chunkId) + '_Tapioca'
             childOutput.append(childOutputId)
 
-            childOutputImages = etree.Element('images')
+            childOutputImages = etree.Element('requirelist')
             childOutputImages.text =  outputFolderName + '/' + chunkImagesListFileName
             childOutput.append(childOutputImages)
-
-            childOutputCommand = etree.Element('command')
-            childOutputCommand.text = 'mm3d Tapioca File ' + chunkXMLFileName + ' -1'
-            childOutput.append(childOutputCommand)
 
             childOutputRequire = etree.Element('require')
             childOutputRequire.text = outputFolderName + '/' + chunkXMLFileName
             childOutput.append(childOutputRequire)
+
+            childOutputCommand = etree.Element('command')
+            childOutputCommand.text = 'mm3d Tapioca File ' + chunkXMLFileName + ' -1'
+            childOutput.append(childOutputCommand)
 
             childOutputOutput = etree.Element('output')
             childOutputOutput.text = "Homol"
@@ -127,7 +127,7 @@ def argument_parser():
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
     parser.add_argument('-i', '--input', default='', help='Input XML valid image pair file', type=str, required=True)
-    parser.add_argument('-o', '--output', default='', help='Output MicMac XML distributed computing file', type=str, required=True)
+    parser.add_argument('-o', '--output', default='', help='Output Distributed Tool XML configuration file', type=str, required=True)
     parser.add_argument('-f', '--folder', default='', help='Output folder where to store the created files. For each chunk there will be a XML file with image pairs and a .list file with a list of files', type=str, required=True)
     parser.add_argument('-n', '--num', default='', help='Number of image pairs per chunk (must be even number)', type=int, required=True)
     return parser

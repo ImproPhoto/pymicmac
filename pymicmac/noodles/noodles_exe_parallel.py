@@ -12,7 +12,7 @@ import time
 import shlex
 import os
 
-logFolder = None
+logFolderAbsPath = ""
 
 class Job:
     def __init__(self, task, exclude, state, job, key):
@@ -27,15 +27,11 @@ def dynamic_exclusion_worker(display, n_threads):
     """This worker allows mutualy exclusive jobs to start safely. The
     user provides the information on which jobs exclude the simultaneous
     execution of other jobs::
-
         a = task()
         b = task()
-
-        update_hints(a, {'id': '1', 'exclude': ['2']})
-        update_hints(b, {'id': '2', 'exclude': ['1']})
-
+        update_hints(a, {'task': '1', 'exclude': ['2']})
+        update_hints(b, {'task': '2', 'exclude': ['1']})
         run(gather(a, b))
-
     Using this worker, when task ``a`` is sent to the underlying worker,
     task ``b`` is blocked until ``a`` completes, and vice versa.
     """
@@ -54,7 +50,7 @@ def dynamic_exclusion_worker(display, n_threads):
             key, job = yield
 
             if job.hints and 'exclude' in job.hints:
-                j = Job(task=job.hints['id'],
+                j = Job(task=job.hints['task'],
                         exclude=job.hints['exclude'],
                         state='waiting',
                         job=job,
@@ -114,7 +110,7 @@ def system_command(cmd, task):
         cmd_split, stdout=subprocess.PIPE,
         stderr=subprocess.PIPE, universal_newlines=True)
     p.check_returncode()
-    oFile = open(os.path.join(logFolder, task),'w')
+    oFile = open(os.path.join(logFolderAbsPath, task + '.log'),'w')
     oFile.write(p.stdout)
     oFile.close()
     return p.stdout
@@ -122,7 +118,7 @@ def system_command(cmd, task):
 
 def make_job(cmd, task_id, exclude):
     j = system_command(cmd, task_id)
-    noodles.update_hints(j, {'id': str(task_id),
+    noodles.update_hints(j, {'task': str(task_id),
                              'exclude': [str(x) for x in exclude]})
     return j
 
@@ -133,6 +129,21 @@ def error_filter(xcptn):
     else:
         return None
 
+def runNoodles(jsonFile, logFolder, numThreads):
+    global logFolderAbsPath
+    logFolderAbsPath = os.path.abspath(logFolder)
+    os.makedirs(logFolderAbsPath)
+    input = json.load(open(jsonFile, 'r'))
+    if input[0].get('task') == None:
+        jobs = [make_job(td['command'],
+                     td['id'], td['exclude']) for td in input]
+    else:
+        jobs = [make_job(td['command'],
+                     td['task'], td['exclude']) for td in input]
+    wf = noodles.gather(*jobs)
+    with SimpleDisplay(error_filter) as display:
+        run(wf, display=display, n_threads=numThreads)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -141,9 +152,6 @@ if __name__ == "__main__":
         '-j', dest='n_threads', type=int, default=1,
         help='number of threads to run simultaneously.')
     parser.add_argument(
-        '-dumb', default=False, action='store_true',
-        help='print info without special term codes.')
-    parser.add_argument(
         'target', type=str,
         help='a JSON file specifying the graph.')
     parser.add_argument(
@@ -151,11 +159,4 @@ if __name__ == "__main__":
         help='a log folder.')
     args = parser.parse_args(sys.argv[1:])
 
-    logFolder = args.log
-    os.makedirs(logFolder)
-    input = json.load(open(args.target, 'r'))
-    jobs = [make_job(td['command'],
-                     td['id'], td['exclude']) for td in input]
-    wf = noodles.gather(*jobs)
-    with SimpleDisplay(error_filter) as display:
-        run(wf, display=display, n_threads=args.n_threads)
+    runNoodles(args.target, args.log, args.n_threads)

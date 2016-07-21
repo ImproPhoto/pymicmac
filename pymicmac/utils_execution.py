@@ -42,7 +42,7 @@ def executeCommandMonitor(commandId, command, diskPath, onlyPrint=False):
         os.system('touch ' + logFileName)
         os.system('touch ' + monitorLogFileName)
         os.system('touch ' + monitorDiskLogFileName)
-    else:    
+    else:
         monitor_cpu_mem_disk.run(command, logFileName, monitorLogFileName, monitorDiskLogFileName, diskPath)
         # TODO: if execution folder is in different file system that source data, right now we only monitor raw data usage
     return (logFileName,monitorLogFileName,monitorDiskLogFileName)
@@ -54,50 +54,42 @@ def getSize(absPath):
     except:
         return -1
 
-def initExecutionFolder(imagesAbsPaths, executionFolder, mmComponents):
-    cwd = os.getcwd()
+def initExecutionFolder(dataDir, executionFolder, mmComponents):
     # Create directory for this execution
     executionFolderAbsPath = os.path.abspath(executionFolder)
     if os.path.exists(executionFolderAbsPath):
         raise Exception(executionFolder + ' already exists!')
     os.makedirs(executionFolderAbsPath)
 
-    # Create links for the images (existance of images has already being checked)
-    for imageAbsPath in imagesAbsPaths:
-        os.symlink(imageAbsPath, os.path.join(executionFolderAbsPath, os.path.basename(imageAbsPath)))
-
-    # Create links for the rest of files/folder specifed in mmComponents/required XML
+    # Create links for the files/folder specifed in require and requirelist XML
     for mmComponent in mmComponents:
+        elements = []
         typeToLinkComponent = mmComponent.find("require")
         if typeToLinkComponent != None:
-            elements = typeToLinkComponent.text.strip().split()
-            for element in elements:
-                if element.endswith('/'):
-                    element = element[:-1]
-                if element.startswith('/'):
-                    elementAbsPath = element
-                else:
-                    elementAbsPath = cwd + '/' + element
-                if os.path.isfile(elementAbsPath) or os.path.isdir(elementAbsPath):
-                    os.symlink(elementAbsPath , os.path.join(executionFolderAbsPath, os.path.basename(elementAbsPath)))
-                else:
-                    raise Exception(element + ' does not exist!')
-
-def getImages(imagesListFile):
-    cwd = os.getcwd()
-    images = []
-    if not os.path.isfile(imagesListFile):
-        raise Exception(imagesListFile + ' does not exist!')
-    for line in open(imagesListFile, 'r').read().split('\n'):
-        if line != '':
-            if line.startswith('/'):
-                imageAbsPath = line
+            elements += typeToLinkComponent.text.strip().split()
+        typeToLinkComponent = mmComponent.find("requirelist")
+        if typeToLinkComponent != None:
+            elements += getRequiredList(typeToLinkComponent.text.strip())
+        for element in elements:
+            if element.endswith('/'):
+                element = element[:-1]
+            if element.startswith('/'):
+                elementAbsPath = element
             else:
-                imageAbsPath = cwd + '/' + line
-            if not os.path.isfile(imageAbsPath):
-                raise Exception(imageAbsPath + ' does not exist!')
-            images.append(imageAbsPath)
-    return images
+                elementAbsPath = dataDir + '/' + element
+            if os.path.isfile(elementAbsPath) or os.path.isdir(elementAbsPath):
+                os.symlink(elementAbsPath , os.path.join(executionFolderAbsPath, os.path.basename(elementAbsPath)))
+            else:
+                raise Exception(element + ' does not exist!')
+
+def getRequiredList(requiredListFile):
+    required = []
+    if not os.path.isfile(requiredListFile):
+        raise Exception(requiredListFile + ' does not exist!')
+    for line in open(requiredListFile, 'r').read().split('\n'):
+        if line != '':
+            required.append(line)
+    return required
 
 def apply_argument_parser(argumentsParser, options=None):
     """ Apply the argument parser. """
