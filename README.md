@@ -174,13 +174,19 @@ python [path to pymicmac]/workflow/distributed_tapioca/combine_distributed_tapio
 
 #### Hardware systems:
 
+##### Local computer
+
+It is possible to use the local computer to run a Distributed Tool specified by Distributed Tool XML configuration files. Use the tool in `workflow/run_distributed_tool_local/run_distributed_tool_local.py` and specify the number of processes you wish to use.
+
+In this case, (soft) links will be created for each of the commands, which will be executed in their own execution folder.
+
 ##### SGE clusters
 
-The tools in `workflow/run_distributed_tool_sge_cluster` is used to run Distributed Tool specified by Ditributed Tool XML configuration files in SGE clusters.
+The tools in `workflow/run_distributed_tool_sge_cluster` is used to run Distributed Tool specified by Distributed Tool XML configuration files in SGE clusters.
 
-SGE cluster usually have a shared folder where all the nodes can access. However, since massive simultaneous access to the shared folder is discouraged, usually local storage in the execution nodes is used when possible.
+SGE clusters usually have a shared folder where all the nodes can access. However, since massive simultaneous access to the shared folder is discouraged, usually local storage in the execution nodes is used when possible.
 
-In our case, both the images and the required data must be in a location that can be accessed from all the cluster nodes computers.
+In our case, the required data must be in a location that can be accessed from all the cluster nodes computers.
 
 After a Distribution Tool configuration file has been created, the tool `workflow/run_distributed_tool_sge_cluster/create_distributed_tool_sge_jobs.py` creates the submission script. This tool requires to specify the data directory, a setenv file and local output directory. All these files and folders and the XML configuration file must be in a shared folder. The tool also requires to specify a remote execution directory. This is the directory in each remote node where the execution of the commends will be done. To submit the different jobs to the queueing system, run the the produced submission script.
 
