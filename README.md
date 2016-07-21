@@ -38,14 +38,9 @@ Which MicMac commands are executed is specified with a Workflow XML configuratio
 
 ### Workflow XML configuration file
 
-To configure the tool:
--  which images are used is specified with an ASCII file containing the list of files (one image path per line) if the tool is run as a script or with a python list/tuple with the images paths if the tool is imported.
-When executing the tool and before executing the specified MicMac processes, an independent execution folder is created and (soft) links of all the specified images are created.
--
-
 The Workflow XML configuration file file must contain a root tag `<Workflow>`. Then, for each component/command of the workflow we have to add a XML element `<Component>` which must have as child elements at least a `<id>` and a `<command>` elements.
 
-Since the workflow will be executed in an independent execution folder, if a component requires some files/folders, the required files/folders have to be specified with `<require>` or `<requirelist>` tags. (Soft) links are created in the execution folder for the specified files/folders. Using `<require>` is for short list of required files/folders and they are specified comma-separated. Using `<requirelist>` is when the list of required files/folders is very long, in which case theya re specified ina  separate ASCII file, one file/folder per line. Both `<require>` and `<requirelist>` can be simultaneously used.  For example, the first tool of the parameters estimation chain must for sure link to the list of images and to the Homol folder generated in the tie-points detection. So, we can use `<requirelist>` to specify a list of images, and `<require>` for the Homol folder (or specify all in the `<requirelist>`).
+Since the workflow will be executed in an independent execution folder, if a component requires some files/folders, the required files/folders have to be specified with `<require>` or `<requirelist>` tags. (Soft) links are created in the execution folder for the specified files/folders. Using `<require>` is for short list of required files/folders and they are specified comma-separated. Using `<requirelist>` is when the list of required files/folders is very long, in which case they are specified in a separate ASCII file, one file/folder per line. Both `<require>` and `<requirelist>` can be simultaneously used.  For example, the first tool of the parameters estimation chain must for sure link to the list of images and to the Homol folder generated in the tie-points detection. So, we can use `<requirelist>` to specify a list of images, and `<require>` for the Homol folder (or specify all in the `<requirelist>`).
 
 It is important to notice that since all the commands of the workflow are executed in the same execution folder, if a previous tool in the workflow already 'linked' a file/folder (using `<require>` or `<requirelist>`) there is no need to do it again. So, only the first command in the workflow must link the images.
 
