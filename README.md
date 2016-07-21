@@ -10,7 +10,7 @@ In short, a photogrammetric workflow contains at least:
 
  - (3) Dense-matching point cloud generation. 3D projection of image pixels to produce the dense point cloud.
 
-pymicmac provides a python tool (`workflow/run_workflow.py`) to run photogrammetric workflows with a sequence of MicMac commands. The tool is configured with a Workflow XML configuration file that defines a chain of MicMac commands to be executed sequentially. Each of the commands is executed together with a CPU/MEM/disk monitor. The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by (1) tie-point detection, (2) parameters estimation and (3) matching.  More information in [Instructions](#instructions) section.
+pymicmac provides a python tool (`workflow/run_workflow.py`) to run photogrammetric workflows with a sequence of MicMac commands. The tool is configured with a Workflow XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the system is monitored (note that the monitor considers ALL processes running in the system, not only the MicMac ones). The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by (1) tie-point detection, (2) parameters estimation and (3) matching.  More information in [Instructions](#instructions) section.
 
 In section [Large image sets](#large-image-sets) we provide some tips on how to use MicMac and pymicmac for processing large image sets using distributed computing (for (1) tie-point detection and (3) matching) and tie-points reduction (for (2) parameters estimation).
 
@@ -94,7 +94,7 @@ python pymicmac/workflow/run_workflow.py -e matching -c matching.xml
 
 ### Monitoring
 
-For each executed command of the specified in the Workflow XML configuration file, the CPU, memory and disk usage are monitored. Monitoring files are created in the execution folder. Concretely a .mon file, a .mon.disk and a .log file. The first one contains CPU/MEM usage monitoring, the second one contains disk usage monitoring and the third one is the log produced by the executed command. To get statistics of .mon files use `monitor/get_monitor_nums.py` and to get a plot use `monitor/plot_cpu_mem.py`. To plot the .mon.disk use `monitor/plot_disk.py`. In the `logsparser` and `logsplotter` packages there are tools to extract information and do plots from the log files of some of the commands (currently of `RedTieP`, `Tapas`, `Campari` and `GCPBascule`).
+During the execution of each command of the specified in the Workflow XML configuration file, the CPU, memory and disk usage of the system are monitored. Note that this include monitoring of ALL the processes running at the system while MicMac is executed. Monitoring files are created in the execution folder. Concretely a .mon file, a .mon.disk and a .log file. The first one contains CPU/MEM usage monitoring, the second one contains disk usage monitoring and the third one is the log produced by the executed command. To get statistics of .mon files use `monitor/get_monitor_nums.py` and to get a plot use `monitor/plot_cpu_mem.py`. To plot the .mon.disk use `monitor/plot_disk.py`. In the `logsparser` and `logsplotter` packages there are tools to extract information and do plots from the log files of some of the commands (currently of `RedTieP`, `Tapas`, `Campari` and `GCPBascule`).
 
 ## Large image sets
 

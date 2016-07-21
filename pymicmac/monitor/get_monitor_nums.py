@@ -47,6 +47,7 @@ def readFile(fileName, resampling = None, ignoreLargeJumps = False):
 
     df = pandas.DataFrame(data=numpy.array(d),index=t,columns=['CPU','MEM'])
     df.index = pandas.to_datetime(df.index, unit='s')
+    df = df.groupby(df.index).first()
     df.index.rename('Time')
     df['MEM'] = ((df['MEM'] / 100.) * memtotal)
     if resampling != None:
