@@ -26,7 +26,7 @@ def run(dataDir, configFile, setEnvironmentFileToSource, remoteExeDir, localOutD
 
 def argument_parser():
    # define argument menu
-    description = "Creates the jobs to submit to a SGE cluster for a MicMac XML distributed computing workflow. For each executed command there is monitoring of used CPU/MEM/disk."
+    description = "Creates the jobs to submit to a SGE cluster for the commands specified in a Distributed Tool XML configuration file. For each command there is monitoring of used CPU/MEM/disk."
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('-d', '--dataDir',default='', help='Data directory with the required data and the distribution configuration folder (this has to be shared and accessible from the cluster nodes)', type=str, required=True)
     parser.add_argument('-c', '--configFile',default='', help='Distributed Tool XML configuration file with the several commands that will be executed in parallel through in SGE cluster. This file must be in the data directory', type=str, required=True)

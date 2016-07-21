@@ -54,33 +54,28 @@ def getSize(absPath):
     except:
         return -1
 
-def initExecutionFolder(dataDir, executionFolder, mmComponents):
+def initExecutionFolder(dataDir, executionFolder, elements, resume = False):
     # Create directory for this execution
     executionFolderAbsPath = os.path.abspath(executionFolder)
+
     if os.path.exists(executionFolderAbsPath):
-        raise Exception(executionFolder + ' already exists!')
-    os.makedirs(executionFolderAbsPath)
+        if not resume:
+            raise Exception(executionFolder + ' already exists!')
+    else:
+        os.makedirs(executionFolderAbsPath)
 
     # Create links for the files/folder specifed in require and requirelist XML
-    for mmComponent in mmComponents:
-        elements = []
-        typeToLinkComponent = mmComponent.find("require")
-        if typeToLinkComponent != None:
-            elements += typeToLinkComponent.text.strip().split()
-        typeToLinkComponent = mmComponent.find("requirelist")
-        if typeToLinkComponent != None:
-            elements += getRequiredList(typeToLinkComponent.text.strip())
-        for element in elements:
-            if element.endswith('/'):
-                element = element[:-1]
-            if element.startswith('/'):
-                elementAbsPath = element
-            else:
-                elementAbsPath = dataDir + '/' + element
-            if os.path.isfile(elementAbsPath) or os.path.isdir(elementAbsPath):
-                os.symlink(elementAbsPath , os.path.join(executionFolderAbsPath, os.path.basename(elementAbsPath)))
-            else:
-                raise Exception(element + ' does not exist!')
+    for element in elements:
+        if element.endswith('/'):
+            element = element[:-1]
+        if element.startswith('/'):
+            elementAbsPath = element
+        else:
+            elementAbsPath = dataDir + '/' + element
+        if os.path.isfile(elementAbsPath) or os.path.isdir(elementAbsPath):
+            os.symlink(elementAbsPath , os.path.join(executionFolderAbsPath, os.path.basename(elementAbsPath)))
+        else:
+            raise Exception(element + ' does not exist!')
 
 def getRequiredList(requiredListFile):
     required = []

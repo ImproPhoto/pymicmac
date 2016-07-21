@@ -27,10 +27,7 @@ print("Required: " + ' '.join(requiredElements))
 print("Output: " + ' '.join(outputElements))
 
 # Check required list file can be accesses
-requiredListFileAbsPath = dataDirAbsPath + '/' + requiredListFile
-if not os.path.isfile(requiredListFileAbsPath):
-    raise Exception(requiredListFileAbsPath + " could not be found!")
-listRequired = open(requiredListFileAbsPath,'r').read().split('\n')
+listRequired = utils_execution.getRequiredList(dataDirAbsPath + '/' + requiredListFile)
 
 # Create a local working directory using the specified remoteExeDir
 lwd = remoteExeDir + '/' + commandId
@@ -44,16 +41,8 @@ commandLocalOutDirAbsPath = localOutDirAbsPath + '/' + commandId
 shutil.rmtree(commandLocalOutDirAbsPath, True)
 os.makedirs(commandLocalOutDirAbsPath)
 
-# Copy all the required files from the data directory (in the shared folder) to the local one
-for requiredElement in listRequired:
-    if requiredElement != '':
-        requiredElementAbsPath = dataDirAbsPath + '/' + requiredElement
-        if os.path.isfile(requiredElementAbsPath):
-            os.system('cp ' + requiredElementAbsPath + ' .')
-        else:
-            raise Exception(requiredElementAbsPath + " could not be found!")
-# Copy other required files and folders in the data directory
-for requiredElement in requiredElements:
+# Copy required files and folders in the data directory
+for requiredElement in requiredElements + listRequired:
     requiredElementAbsPath =  dataDirAbsPath + '/' + requiredElement
     if os.path.isfile(requiredElementAbsPath):
         os.system('cp ' + requiredElementAbsPath + ' .')

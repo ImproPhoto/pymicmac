@@ -3,7 +3,7 @@ import os, argparse
 from lxml import etree
 from pymicmac import utils_execution
 
-def run(dataDir, exeDir, configFile, onlyShowCommands, noInit):
+def run(dataDir, exeDir, configFile, onlyShowCommands, resume):
     cwd = os.getcwd()
     dataAbsPath = os.path.abspath(dataDir)
     executionFolderAbsPath = os.path.abspath(exeDir)
@@ -15,10 +15,16 @@ def run(dataDir, exeDir, configFile, onlyShowCommands, noInit):
     e = etree.parse(configFile).getroot()
     mmComponents = e.findall('Component')
 
-    # Initialize the execution folder
-    if not noInit:
-        # Initialize execution folder (i.e. create links)
-        utils_execution.initExecutionFolder(dataAbsPath, executionFolderAbsPath, mmComponents)
+    # Initialize execution folder (i.e. create links)
+    elements = []
+    for mmComponent in mmComponents:
+        typeToLinkComponent = mmComponent.find("require")
+        if typeToLinkComponent != None:
+            elements += typeToLinkComponent.text.strip().split()
+        typeToLinkComponent = mmComponent.find("requirelist")
+        if typeToLinkComponent != None:
+            elements += utils_execution.getRequiredList(typeToLinkComponent.text.strip())
+    utils_execution.initExecutionFolder(dataAbsPath, executionFolderAbsPath, elements, resume)
 
     if not onlyShowCommands:
         # Change directory to execution folder
@@ -41,14 +47,14 @@ def argument_parser():
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument('-d', '--dataDir',default='', help='Data directory that contains all the required data (if using relative paths in <require> and <requirelist) in the Workflow XML configuration file, those path will be relative to the data directory specified with this option)', type=str, required=True)
     parser.add_argument('-c', '--configFile',default='', help='Workflow XML configuration file with the several commands.', type=str, required=True)
-    parser.add_argument('-e', '--exe',default='', help='Execution folder path. The execution of the workflow will be done in a folder where links to required data will be made.', type=str, required=True)
+    parser.add_argument('-e', '--exeDir',default='', help='Execution folder path. The execution of the workflow will be done in a folder where links to required data will be made.', type=str, required=True)
     parser.add_argument('--onlyShowCommands', default=False, help='If enabled, it does not execute the initialization of the execution folder and it only shows the commands and does not execute them [default is disabled]', action='store_true')
-    parser.add_argument('--noInit', default=False, help='If enabled, it does not run the initialization of the execution folder (creating it and making the links) [default is disabled]', action='store_true')
+    parser.add_argument('--resume', default=False, help='If enabled, it does not raise exception if the execution folder exists. This is useful when you want to redo parts of a workflow. If you use this option be sure to update the <require> and <requirelist> accordingly to avoid trying to link data that is already in the execution folder [default is disabled]', action='store_true')
     return parser
 
 if __name__ == "__main__":
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
-        run(a.dataDir, a.exe, a.configFile, a.onlyShowCommands, a.noInit)
+        run(a.dataDir, a.exeDir, a.configFile, a.onlyShowCommands, a.resume)
     except Exception as e:
         print(e)
