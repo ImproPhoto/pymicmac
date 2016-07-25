@@ -8,6 +8,6 @@
 # </CameraEntry>
 
 python ../pymicmac/workflow/distributed_tapioca/create_all_image_pairs_file.py -i . -f jpg -o ImagePairs.xml
-python ../pymicmac/workflow/distributed_tapioca/create_tapioca_distributed_tool_config_file.py -i ImagePairs.xml -o DistributedTapioca.xml -f DistributedTapioca -n 6
-python ../pymicmac/workflow/run_distributed_tool_local/run_distributed_tool_local.py -d . -c DistributedTapioca.xml -e DistributedTapiocaExe -n 2
+python ../pymicmac/workflow/distributed_tapioca/create_parcommands_config_file.py -i ImagePairs.xml -o DistributedTapioca.xml -f DistributedTapioca -n 6
+python -c "from pycoeman.parcommands import run_parcommands_local; run_parcommands_local.run('.', 'DistributedTapiocaExe', 'DistributedTapioca.xml', 2, False)"
 python ../pymicmac/workflow/distributed_tapioca/combine_distributed_tapioca_output.py -i DistributedTapiocaExe -o Homol

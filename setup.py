@@ -14,16 +14,23 @@ except:
     print('Installation could not be done: noodles could not be found.')
     sys.exit(1)
 
+# Third we see if pycoeman has been manually installed and is in PYTHONPATH
+try:
+    import pycoeman
+except:
+    print('Installation could not be done: pycoeman could not be found.')
+    sys.exit(1)
+
 setup(
     name='pymicmac',
     version='0.1dev',
-    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.monitor', 'pymicmac.noodles', 'pymicmac.other', 'pymicmac.workflow'],
+    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.noodles', 'pymicmac.other', 'pymicmac.workflow'],
     license='',
     long_description=open('README.md').read(),
     author='Oscar Martinez-Rubi',
     author_email='o.rubi@esciencecenter.nl',
     url='https://github.com/pymicmac/pymicmac',
     install_requires=[
-          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles', 'pandas'
+          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles', 'pycoeman'
     ],
 )

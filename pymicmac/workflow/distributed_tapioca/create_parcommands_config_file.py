@@ -26,7 +26,7 @@ def run(inputFile, outputFile, outputFolder, num):
 
     # Create output file
     oFile = open(outputFileAbsPath, 'w')
-    rootOutput = etree.Element('DistributedTool')
+    rootOutput = etree.Element('ParCommands')
 
     pairs = e.findall('Cple')
     numPairs = len(pairs)
@@ -123,12 +123,12 @@ def run(inputFile, outputFile, outputFolder, num):
 
 def argument_parser():
    # define argument menu
-    description = "Splits a valid image pairs file suitable for Tapioca into chunks. For each chunk, it adds a component in a MicMac XML distributed computing file, and it stores in a distribution configuration folder the information of the chunk "
+    description = "Splits a valid image pairs file suitable for Tapioca into chunks. For each chunk, it adds a component in a pycomean parallel commands XML configuration file, and it stores in a parallel configuration folder the information of the chunk "
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
     parser.add_argument('-i', '--input', default='', help='Input XML valid image pair file', type=str, required=True)
-    parser.add_argument('-o', '--output', default='', help='Output Distributed Tool XML configuration file', type=str, required=True)
-    parser.add_argument('-f', '--folder', default='', help='Output folder where to store the created files. For each chunk there will be a XML file with image pairs and a .list file with a list of files', type=str, required=True)
+    parser.add_argument('-o', '--output', default='', help='pycoeman parallel commands XML configuration file', type=str, required=True)
+    parser.add_argument('-f', '--folder', default='', help='Output parallel configuration folder where to store the created files. For each chunk there will be a XML file with image pairs and a .list file with a list of files', type=str, required=True)
     parser.add_argument('-n', '--num', default='', help='Number of image pairs per chunk (must be even number)', type=int, required=True)
     return parser
 

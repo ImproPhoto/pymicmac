@@ -1,4 +1,4 @@
-<Workflow>
+<SeqCommands>
   <Component>
     <id> Malt </id>
     <requirelist>list.txt</requirelist>
@@ -9,4 +9,4 @@
     <id> Nuage2Ply </id>
     <command> mm3d Nuage2Ply "./Results/NuageImProf_STD-MALT_Etape_8.xml" Attr="1.jpg" Out=1.ply</command>
   </Component>
-</Workflow>
+</SeqCommands>

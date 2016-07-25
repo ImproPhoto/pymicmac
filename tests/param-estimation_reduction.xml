@@ -1,4 +1,4 @@
-<Workflow>
+<SeqCommands>
   <Component>
     <id>NO_AllOri2Im</id>
     <requirelist>list.txt</requirelist>
@@ -21,4 +21,4 @@
     <command> mm3d GCPBascule ".*jpg" TapasOut GCPBOut gcp_List3D.xml coord_List2D.xml </command>
     <require> gcp_List3D.xml coord_List2D.xml </require>
   </Component> -->
-</Workflow>
+</SeqCommands>
