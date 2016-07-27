@@ -132,10 +132,10 @@ The folder `workflow/distributed_tapioca` contains tools to aid when running Tap
 
 First, in order to run this tool we need a image pairs file. This file list the image pairs that need to be considered when running Tapioca. This is very helpful to avoid running Tapioca with every possible image pair. If you do not have a image pairs file, you can use the tool `workflow/distributed_tapioca/create_all_image_pairs_file.py` to create a image pairs file with every possible image pair.
 
-Second, we use the `workflow/distributed_tapioca/create_tapioca_distributed_tool_config_file.py` to split the image pairs XML file in multiple chunks and to create a XML configuration file:
+Second, we use the `workflow/distributed_tapioca/create_parcommands_config_file.py` to split the image pairs XML file in multiple chunks and to create a XML configuration file:
 
 ```
-python [path to pymicmac]/pymicmac/workflow/distributed_tapioca/create_tapioca_parcommands_config_file.py -i [input XML image pairs] -f [folder for output XMLs and file lists, one for each chunk] -n [number of image pairs per output XML, must be even number] -o [XML configuration file]
+python [path to pymicmac]/pymicmac/workflow/distributed_tapioca/create_parcommands_config_file.py -i [input XML image pairs] -f [folder for output XMLs and file lists, one for each chunk] -n [number of image pairs per output XML, must be even number] -o [XML configuration file]
 ```
 
 Depending in the maximum job execution time of the cluster you are using, chose a number wisely. For example, we chose 20 image pairs per chunk to have jobs that last less than 10 minutes.
