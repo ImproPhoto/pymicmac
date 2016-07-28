@@ -144,8 +144,7 @@ def runNoodles(jsonFile, logFolder, numThreads):
     with SimpleDisplay(error_filter) as display:
         run(wf, display=display, n_threads=numThreads)
 
-
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser(
         description="SOBA: Run a non-directional exclusion graph job.")
     parser.add_argument(
@@ -160,3 +159,6 @@ if __name__ == "__main__":
     args = parser.parse_args(sys.argv[1:])
 
     runNoodles(args.target, args.log, args.n_threads)
+
+if __name__ == "__main__":
+    main()

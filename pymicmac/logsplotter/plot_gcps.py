@@ -1,5 +1,5 @@
  #!/usr/bin/python
-import sys, os, math
+import sys, os, math, argparse
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
@@ -54,9 +54,12 @@ def argument_parser():
     parser.add_argument('-x', '--xml',default='', help='XML file with the 3D position of the GCPs (and possible CPs)', type=str, required=True)
     return parser
 
-if __name__ == "__main__":
+def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.xml)
     except Exception as e:
         print(e)
+
+if __name__ == "__main__":
+    main()

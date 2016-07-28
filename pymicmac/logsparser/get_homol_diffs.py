@@ -34,9 +34,12 @@ def argument_parser():
     parser.add_argument('-c','--compare',default='', help='Comma-separated Homol folder to compare', type=str, required=True)
     return parser
 
-if __name__ == "__main__":
+def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.original, a.compare)
     except Exception as e:
         print(e)
+
+if __name__ == "__main__":
+    main()

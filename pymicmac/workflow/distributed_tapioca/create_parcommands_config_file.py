@@ -132,9 +132,12 @@ def argument_parser():
     parser.add_argument('-n', '--num', default='', help='Number of image pairs per chunk (must be even number)', type=int, required=True)
     return parser
 
-if __name__ == "__main__":
+def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.input, a.output, a.folder, a.num)
     except Exception as e:
         print(e)
+
+if __name__ == "__main__":
+    main()

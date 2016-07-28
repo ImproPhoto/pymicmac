@@ -7,7 +7,7 @@
 #      <ShortName> Aquaris E5 HD </ShortName>
 # </CameraEntry>
 
-python ../pymicmac/workflow/distributed_tapioca/create_all_image_pairs_file.py -i . -f jpg -o ImagePairs.xml
-python ../pymicmac/workflow/distributed_tapioca/create_parcommands_config_file.py -i ImagePairs.xml -o DistributedTapioca.xml -f DistributedTapioca -n 6
-python -c "from pycoeman.parcommands import run_parcommands_local; run_parcommands_local.run('.', 'DistributedTapiocaExe', 'DistributedTapioca.xml', 2, False)"
-python ../pymicmac/workflow/distributed_tapioca/combine_distributed_tapioca_output.py -i DistributedTapiocaExe -o Homol
+micmac-disttapioca-create-pairs -i . -f jpg -o ImagePairs.xml
+micmac-disttapioca-create-config -i ImagePairs.xml -o DistributedTapioca.xml -f DistributedTapioca -n 6
+coeman-par-local -d . -e DistributedTapiocaExe -c DistributedTapioca.xml -n 2
+micmac-disttapioca-combine -i DistributedTapiocaExe -o Homol

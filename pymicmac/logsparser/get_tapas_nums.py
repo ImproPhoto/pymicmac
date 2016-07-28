@@ -42,9 +42,12 @@ def argument_parser():
     parser.add_argument('-f', '--folders',default='', help='Comma-separated list of execution folders where to look for the Tapas.log files', type=str, required=True)
     return parser
 
-if __name__ == "__main__":
+def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.folders)
     except Exception as e:
         print(e)
+
+if __name__ == "__main__":
+    main()

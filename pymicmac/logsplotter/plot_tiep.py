@@ -90,9 +90,12 @@ def argument_parser():
     parser.add_argument('--maxy',default='', help='Maximum Y value', type=int, required=True)
     return parser
 
-if __name__ == "__main__":
+def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.input, a.maxx, a.maxy)
     except Exception as e:
         print(e)
+
+if __name__ == "__main__":
+    main()

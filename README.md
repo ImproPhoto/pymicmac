@@ -1,6 +1,6 @@
 # pymicmac
 
-pymicmac provides a python interface for MicMac workflows execution and distributed computing tools for MicMac. pymicmac uses pycoeman (Python Commands Execution Manager) (https://github.com/oscarmartinezrubi/pycoeman) which also provides CPU/MEM/disk monitoring.
+pymicmac provides a python interface for MicMac workflows execution and distributed computing tools for MicMac. pymicmac uses pycoeman (Python Commands Execution Manager) (https://github.com/NLeSC/pycoeman) which also provides CPU/MEM/disk monitoring.
 
 MicMac is a photogrammetric suite which contains many different tools to execute photogrammetric workflows.
 In short, a photogrammetric workflow contains at least:
@@ -11,7 +11,7 @@ In short, a photogrammetric workflow contains at least:
 
  - (3) Dense-matching point cloud generation. 3D projection of image pixels to produce the dense point cloud.
 
-pymicmac provides the python tool `workflow/run_workflow.py` to run photogrammetric workflows with a sequence of MicMac commands. The tool uses the sequential commands execution tool of pycoeman which is configured with a XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the system is monitored (note that the monitor considers ALL processes running in the system, not only the MicMac ones). The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by (1) tie-point detection, (2) parameters estimation and (3) matching.  More information in [Instructions](#instructions) section.
+pymicmac provides the tool `micmac-run-workflow` to run photogrammetric workflows with a sequence of MicMac commands. The tool uses the sequential commands execution tool of pycoeman which is configured with a XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the system is monitored (note that the monitor considers ALL processes running in the system, not only the MicMac ones). The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by (1) tie-point detection, (2) parameters estimation and (3) matching.  More information in [Instructions](#instructions) section.
 
 In section [Large image sets](#large-image-sets) we provide some tips on how to use MicMac and pymicmac for processing large image sets using distributed computing (for (1) tie-point detection and (3) matching) and tie-points reduction (for (2) parameters estimation).
 
@@ -20,12 +20,18 @@ In section [Large image sets](#large-image-sets) we provide some tips on how to 
 Clone this repository and install it with pip (using a virtualenv is recommended):
 
 ```
-git clone https://github.com/ImproPhoto/pymicmac.git
+git clone https://github.com/ImproPhoto/pymicmac
 cd pymicmac
 pip install .
 ```
 
-Python dependencies: pycoeman and noodles (see https://github.com/oscarmartinezrubi/pycoeman and https://github.com/NLeSC/noodles for installation instructions)
+or install directly with:
+
+```
+pip install git+https://github.com/ImproPhoto/pymicmac
+```
+
+Python dependencies: pycoeman and noodles (see https://github.com/NLeSC/pycoeman and https://github.com/NLeSC/noodles for installation instructions)
 
 Other python  dependencies (numpy, tabulate, matplotlib, lxml) are automatically installed by `pip install .` but some system libraries have to be installed (for example freetype is required by matplotlib and may need to be installed by the system admin)
 
@@ -33,11 +39,11 @@ For now pymicmac works only in Linux systems. Requires Python 3.5.
 
 ## Instructions
 
-The tool `workflow/run_workflow.py` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-point detection, (2) parameters estimation and (3) matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_workflow_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`). Which MicMac commands are executed is specified with a XML configuration file.
+The tool `micmac-run-workflow` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-point detection, (2) parameters estimation and (3) matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_workflow_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`). Which MicMac commands are executed is specified with a XML configuration file.
 
 ### Workflow XML configuration file
 
-The Workflow XML configuration file format is the sequential commands XML configuration file format used by pycomean (https://github.com/oscarmartinezrubi/pycoeman). For pymicmac, usually the first tool in any Workflow XML configuration file links to the list of images. So, we can use `<requirelist>` to specify a file with a list of images. Next, some XML examples:
+The Workflow XML configuration file format is the sequential commands XML configuration file format used by pycoeman (https://github.com/NLeSC/pycoeman). For pymicmac, usually the first tool in any Workflow XML configuration file links to the list of images. So, we can use `<requirelist>` to specify a file with a list of images. Next, some XML examples:
 
 - Tie-points detection:
 ```
@@ -80,14 +86,14 @@ The Workflow XML configuration file format is the sequential commands XML config
 
 Following the examples above, we could execute a whole photogrammetric workflow with:
 ```
-python pymicmac/workflow/run_workflow.py -e tie-point-detection -c tie-point-detection.xml
-python pymicmac/workflow/run_workflow.py -e param-estimation -c param-estimation.xml
-python pymicmac/workflow/run_workflow.py -e matching -c matching.xml
+micmac-run-workflow -e tie-point-detection -c tie-point-detection.xml
+micmac-run-workflow -e param-estimation -c param-estimation.xml
+micmac-run-workflow -e matching -c matching.xml
 ```
 
 ### Monitoring
 
-pycoeman (the tool used by pymicmac to run the commands) stores the log produced by each command in a .log file. Additionally, it stores a .mon and a .mon.disk with the CPU/MEM/disk monitoring. pycoeman has tools to get statistics and plots of the monitor files (see https://github.com/oscarmartinezrubi/pycoeman). In the pymicmac packages `logsparser` and `logsplotter` there are tools to extract information and plots from the log files of some of the commands (currently of `RedTieP`, `Tapas`, `Campari` and `GCPBascule`).
+pycoeman (the tool used by pymicmac to run the commands) stores the log produced by each command in a .log file. Additionally, it stores a .mon and a .mon.disk with the CPU/MEM/disk monitoring. pycoeman has tools to get statistics and plots of the monitor files (see https://github.com/NLeSC/pycoeman). pymicmac has some tools to analyze the logs of several MicMac commands: `micmac-tapas-log-anal`, `micmac-redtiep-log-anal`, `micmac-redtiep-log-anal`, `micmac-campari-log-anal`, `micmac-gcpbascule-log-anal`, `micmac-gcpbascule-log-plot`, `micmac-campari-log-plot`.
 
 ## Large image sets
 
@@ -122,30 +128,28 @@ We use the parallel commands execution tools of pycoeman. The various parallel/d
 </ParCommands>
 ```
 
-In [Implemented MicMac Tools](#implemented-micmac-tools) we detail the current MicMac tools for which we have implemented a distributed version. The tool `monitor/plot_cpu_mem.py` of pycoeman can be used to get a plot of the aggregated CPU and MEM usage.
+In [Implemented MicMac Tools](#implemented-micmac-tools) we detail the current MicMac tools for which we have implemented a distributed version. The tool `coeman-mon-plot-cpu-mem` of pycoeman can be used to get a plot of the aggregated CPU and MEM usage.
 
 #### Implemented MicMac Tools
 
 ##### Tapioca
 
-The folder `workflow/distributed_tapioca` contains tools to aid when running Tapioca using distributed computing systems with pycoeman.
+The tools `micmac-disttapioca-create-pairs`, `micmac-disttapioca-create-config`, `micmac-disttapioca-combine` together with the parallel commands execution tools of pycoeman to run Tapioca using distributed computing systems.
 
-First, in order to run this tool we need a image pairs file. This file list the image pairs that need to be considered when running Tapioca. This is very helpful to avoid running Tapioca with every possible image pair. If you do not have a image pairs file, you can use the tool `workflow/distributed_tapioca/create_all_image_pairs_file.py` to create a image pairs file with every possible image pair.
+First, in order to run this tool we need a image pairs file. This file list the image pairs that need to be considered when running Tapioca. This is very helpful to avoid running Tapioca with every possible image pair. If you do not have a image pairs file, you can use the tool `micmac-disttapioca-create-pairs` to create a image pairs file with every possible image pair.
 
-Second, we use the `workflow/distributed_tapioca/create_parcommands_config_file.py` to split the image pairs XML file in multiple chunks and to create a XML configuration file:
-
-```
-python [path to pymicmac]/pymicmac/workflow/distributed_tapioca/create_parcommands_config_file.py -i [input XML image pairs] -f [folder for output XMLs and file lists, one for each chunk] -n [number of image pairs per output XML, must be even number] -o [XML configuration file]
-```
-
-Depending in the maximum job execution time of the cluster you are using, chose a number wisely. For example, we chose 20 image pairs per chunk to have jobs that last less than 10 minutes.
-
-Now, you are ready to run this distributed tool in any of the available hardware systems that are supported by pycoeman (see https://github.com/oscarmartinezrubi/pycoeman)
-
-After the distributed Tapioca has finished you will have to combine all the outputs from the different chunks. Use `workflow/distributed_tapioca/combine_distributed_tapioca_output.py` to join them into a final Homol folder
+Second, we use the `micmac-disttapioca-create-config` to split the image pairs XML file in multiple chunks and to create a XML configuration file:
 
 ```
-python [path to pymicmac]/workflow/distributed_tapioca/combine_distributed_tapioca_output.py -i [folder with subfolders, each subfolder with the results of the processing of a chunk] -o [output combined folder]
+micmac-disttapioca-create-config -i [input XML image pairs] -f [folder for output XMLs and file lists, one for each chunk] -n [number of image pairs per output XML, must be even number] -o [XML configuration file]
+```
+
+Now, you are ready to run this distributed tool in any of the available hardware systems that are supported by pycoeman (see https://github.com/NLeSC/pycoeman). For this, use the tools `coeman-par-local`, `coeman-par-ssh` or `coeman-par-sge`.
+
+After the distributed Tapioca has finished you will have to combine all the outputs from the different chunks. Use `micmac-disttapioca-combine` to join them into a final Homol folder
+
+```
+micmac-disttapioca-combine -i [folder with subfolders, each subfolder with the results of the processing of a chunk] -o [output combined folder]
 ```
 
 ### Tie-points reduction
@@ -156,7 +160,7 @@ Two tools can be used for this purpose: `RedTieP` and `OriRedTieP`. The first on
 
 For examples, see `tests/param-estimation_reduction.xml` and  `tests/param-estimation_orireduction.xml`
 
-When a tie-point reduction is used with either of the available tools, the tool `other/get_homol_diff.py` can be used to compute the reduction factors.
+When a tie-point reduction is used with either of the available tools, the tool `micmac-homol-compare` can be used to compute the reduction factors.
 
 Note that after running the tie-points reduction tools, the Homol folder has to be changed (see the examples).
-Also note that when running `RedTieP`, it is possible to use parallel execution mode. See the example in `tests/param-estimation_reduction.xml`.
+Also note that when running `RedTieP`, it is possible to use parallel execution mode together with the tool `micmac-noodles`. See the example in `tests/param-estimation_reduction.xml`.

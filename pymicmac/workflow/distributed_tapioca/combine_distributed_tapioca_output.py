@@ -15,7 +15,7 @@ def run(inputFolder, outputFolder):
             os.system('cp -r ' +  tapiocaCommandIdHomolAbsPath + '/* ' + outputFolder)
         else:
             print('WARNING: could not find tie-points in ' + tapiocaCommandIdHomolAbsPath)
-            
+
 def argument_parser():
    # define argument menu
     description = "Combine Homol folders into single one. To be run after a distributed Tapioca"
@@ -25,9 +25,12 @@ def argument_parser():
     parser.add_argument('-o','--outputFolder',default='', help='Output folder', type=str, required=True)
     return parser
 
-if __name__ == "__main__":
+def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.inputFolder, a.outputFolder)
     except Exception as e:
         print(e)
+
+if __name__ == "__main__":
+    main()

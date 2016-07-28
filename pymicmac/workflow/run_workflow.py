@@ -14,9 +14,12 @@ def argument_parser():
     parser.add_argument('--resume', default=False, help='If enabled, it does not raise exception if the execution folder exists. This is useful when you want to redo some of the commands. If you use this option be sure to update the <require> and <requirelist> accordingly to avoid trying to link data that is already in the execution folder [default is disabled]', action='store_true')
     return parser
 
-if __name__ == "__main__":
+def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run_seqcommands_local.run(a.dataDir, a.exeDir, a.configFile, a.onlyShowCommands, a.resume)
     except Exception as e:
         print(e)
+
+if __name__ == "__main__":
+    main()

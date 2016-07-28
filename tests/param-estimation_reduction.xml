@@ -9,8 +9,7 @@
     <id>RedTieP</id>
     <!-- <command>mm3d RedTieP ".*jpg"; rm Homol; mv Homol-Red Homol</command> -->
     <!-- When running in parallel, we use Noodles in the following manner: -->
-    <command>mm3d RedTieP ".*jpg" ExpSubCom=1; python -c "from pymicmac.noodles import noodles_exe_parallel; noodles_exe_parallel.runNoodles('subcommands.json', 'RedTieP_logs', 4)"; rm Homol; mv Homol-Red Homol</command>
-    <!-- <command>mm3d RedTieP ".*jpg" ExpSubCom=1; python -c "from pymicmac.noodles import noodles_exe_parallel; print('is this happening or not?')"; rm Homol; mv Homol-Red Homol</command> -->
+    <command>mm3d RedTieP ".*jpg" ExpSubCom=1; micmac-noodles subcommands.json RedTieP_logs -j 4; rm Homol; mv Homol-Red Homol</command>
   </Component>
   <Component>
     <id> Tapas </id>
