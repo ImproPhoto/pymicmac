@@ -2,7 +2,7 @@
   <Component>
     <id> Tapas </id>
     <requirelist>list.txt</requirelist>
-    <require>tie-point-detection/Homol</require>
-    <command> mm3d Tapas Fraser ".*jpg" Out=TapasOut </command>
+    <require>tie-point-detection/Homol MicMac-LocalChantierDescripteur.xml </require>
+    <command> mm3d Tapas Fraser ".*jpg" Out=TapasOut</command>
   </Component>
 </SeqCommands>

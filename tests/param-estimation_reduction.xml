@@ -3,7 +3,7 @@
     <id>NO_AllOri2Im</id>
     <requirelist>list.txt</requirelist>
     <command>mm3d TestLib NO_AllOri2Im ".*jpg" Quick=1</command>
-    <require>tie-point-detection/Homol</require>
+    <require>tie-point-detection/Homol MicMac-LocalChantierDescripteur.xml</require>
   </Component>
   <Component>
     <id>RedTieP</id>

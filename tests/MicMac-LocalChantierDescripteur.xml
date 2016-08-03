@@ -1,0 +1,11 @@
+<Global>
+<ChantierDescripteur>
+   <LocCamDataBase>
+   <CameraEntry>
+      <Name>  Aquaris E5 HD </Name>
+      <SzCaptMm> 2.5 4.4 </SzCaptMm>
+      <ShortName> Aquaris E5 HD </ShortName>
+   </CameraEntry>
+   </LocCamDataBase>
+</ChantierDescripteur>
+</Global>

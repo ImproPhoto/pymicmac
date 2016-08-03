@@ -3,6 +3,7 @@
     <id> Tapioca </id>
     <requirelist>list.txt</requirelist>
     <command> mm3d Tapioca All ".*jpg" -1 </command>
+    <require> MicMac-LocalChantierDescripteur.xml </require>
     <!-- <command> mm3d Tapioca File GrapheHom.xml -1 </command> -->
   </Component>
 </SeqCommands>

@@ -3,7 +3,7 @@
     <id>Martini</id>
     <requirelist>list.txt</requirelist>
     <command>mm3d Martini ".*jpg" OriCalib=IniCal</command>
-    <require>tie-point-detection/Homol Ori-IniCal</require>
+    <require>tie-point-detection/Homol Ori-IniCal MicMac-LocalChantierDescripteur.xml</require>
   </Component>
   <Component>
     <id>OriRedTieP</id>
