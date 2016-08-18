@@ -132,9 +132,9 @@ def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile,
             childOutputRequire.text = orientationFolder + " " + requireLocalChanDescFile
 
             childOutputCommand = etree.SubElement(childOutput, 'command')
-            command = 'mm3d Malt Ortho ".*' + imagesFormat + '" ' + os.path.basename(orientationFolder) + ' "BoxTerrain=[' + ','.join([str(e) for e in (tMinX, tMinY,tMaxX, tMaxY)]) + ']"'
-            command += ';mm3d Tawny Ortho-MEC-Malt'
-            command += ';mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=' + tileName + '.ply'
+            command = 'echo -e "\n" | mm3d Malt Ortho ".*' + imagesFormat + '" ' + os.path.basename(orientationFolder) + ' "BoxTerrain=[' + ','.join([str(e) for e in (tMinX, tMinY,tMaxX, tMaxY)]) + ']"'
+            command += '; echo -e "\n" | mm3d Tawny Ortho-MEC-Malt'
+            command += '; echo -e "\n" | mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=' + tileName + '.ply'
             childOutputCommand.text = command
 
             childOutputOutput = etree.SubElement(childOutput, 'output')
