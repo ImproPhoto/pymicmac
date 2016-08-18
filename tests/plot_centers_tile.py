@@ -18,4 +18,7 @@ fig = plt.figure()
 ax = fig.add_subplot(111,aspect='equal')
 ax.add_patch(patches.Rectangle((minx,miny), maxx-minx, maxy-miny, fill=False))
 ax.scatter(points[:,0], points[:,1], color='g')
-plt.show()
+if len(sys.argv) == 3:
+    plt.show()
+else:
+    fig.savefig(sys.argv[3])
