@@ -15,31 +15,25 @@ def getTileIndex(pX, pY, minX, minY, maxX, maxY, nX, nY):
     return (xpos, ypos)
 
 
-def run(orientationFolder, homolFolder, matchingXML, matchingScript, numNeighbours, outputFile, outputFolder, num):
+def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile, outputFolder, num):
     # Check user parameters
-    orientationFolderAbsPath = os.path.abspath(orientationFolder)
-    homolFolderAbsPath =  os.path.abspath(homolFolder)
-    matchingXMLAbsPath = os.path.abspath(matchingXML)
-    matchingScriptAbsPath = os.path.abspath(matchingScript)
-    if not os.path.isdir(orientationFolderAbsPath):
-        raise Exception(orientationFolderAbsPath + ' does not exist')
-    if not os.path.isdir(homolFolderAbsPath):
-        raise Exception(homolFolderAbsPath + ' does not exist')
-    if not os.path.isfile(matchingXMLAbsPath):
-        raise Exception(matchingXMLAbsPath + ' does not exist')
-    if not os.path.isfile(matchingScriptAbsPath):
-        raise Exception(matchingScriptAbsPath + ' does not exist')
+    if not os.path.isdir(orientationFolder):
+        raise Exception(orientationFolder + ' does not exist')
+    if not os.path.isdir(homolFolder):
+        raise Exception(homolFolder + ' does not exist')
 
-    outputFileAbsPath = os.path.abspath(outputFile)
-    outputFolderAbsPath = os.path.abspath(outputFolder)
     if os.path.isfile(outputFile):
         raise Exception(outputFile + ' already exists!')
     if os.path.isdir(outputFolder):
         raise Exception(outputFolder + ' already exists!')
-    outputFolderName = os.path.basename(outputFolderAbsPath)
-
     # create output folder
-    os.makedirs(outputFolderAbsPath)
+    os.makedirs(outputFolder)
+
+    mmLocalChanDescFile = 'MicMac-LocalChantierDescripteur.xml'
+    requireLocalChanDescFile = ''
+    if os.path.isfile(mmLocalChanDescFile):
+        requireLocalChanDescFile = mmLocalChanDescFile
+
     # Parse number of tiles in X and Y
     nX,nY = [int(e) for e in num.split(',')]
 
@@ -65,9 +59,19 @@ def run(orientationFolder, homolFolder, matchingXML, matchingScript, numNeighbou
     tileSizeX = (maxX - minX) / nX
     tileSizeY = (maxY - minY) / nY
 
-
     # Create a KDTree to query nearest neighbours
     kdtree = spatial.KDTree(camera2DPoints)
+
+    # Check that tiles are small enough with the given images
+    numSamplePoints = 100
+    distances = []
+    for camera2DPoint in camera2DPoints[:numSamplePoints]:
+        distances.append(kdtree.query(camera2DPoint, 2)[0][1])
+    meanDistance = numpy.mean(distances)
+    if tileSizeX > meanDistance:
+        raise Exception("Increase number of tiles in X. It has to be higher than " + str(int(nX * (tileSizeX/meanDistance))))
+    if tileSizeY > meanDistance:
+        raise Exception("Increase number of tiles in Y. It has to be higher than " + str(int(nY * (tileSizeY/meanDistance))))
 
     # For each tile first we get a list of images whose camera XY position lays within the tile
     # note: there may be empty tiles
@@ -81,7 +85,7 @@ def run(orientationFolder, homolFolder, matchingXML, matchingScript, numNeighbou
             tilesImages[tileIndex].append(images[i])
 
     # Create output file
-    oFile = open(outputFileAbsPath, 'w')
+    oFile = open(outputFile, 'w')
     rootOutput = etree.Element('ParCommands')
 
     # For each tile we extend the tilesImages list with the nearest neighbours
@@ -103,7 +107,7 @@ def run(orientationFolder, homolFolder, matchingXML, matchingScript, numNeighbou
             imagesTileSetFinal = imagesTileSet.copy()
             # Add to the images for this tile, othe rimages that have tie-points with the current images in the tile
             for image in imagesTileSet:
-                 imagesTileSetFinal.update([e.replace('.dat','') for e in os.listdir(homolFolderAbsPath + '/Pastis' + image)])
+                 imagesTileSetFinal.update([e.replace('.dat','') for e in os.listdir(homolFolder + '/Pastis' + image)])
 
             if len(imagesTileSetFinal) == 0:
                 raise Exception('EMPTY TILE!')
@@ -111,37 +115,10 @@ def run(orientationFolder, homolFolder, matchingXML, matchingScript, numNeighbou
             tileName = 'tile_' + str(i) + '_' + str(j)
 
             # Dump the list of images for this tile
-            tileImageListOutputFileName = outputFolderAbsPath + '/' + tileName + '.list'
+            tileImageListOutputFileName = outputFolder + '/' + tileName + '.list'
             tileImageListOutputFile = open(tileImageListOutputFileName, 'w')
             tileImageListOutputFile.write('\n'.join(sorted(imagesTileSetFinal)))
             tileImageListOutputFile.close()
-
-            # Create the MicMac configuration for this tile
-            tileMicMacConfigXMLFileName = outputFolderAbsPath + '/' + tileName + '_' + os.path.basename(matchingXMLAbsPath)
-            tileMicMacConfigXMLFile = open(tileMicMacConfigXMLFileName, 'w')
-            e = etree.parse(matchingXMLAbsPath).getroot()
-
-            if i == 0 and j == 0:
-                orientationFolderFromMatchingXML = e.xpath('//CalcName')[0].text.strip().split('/')[0]
-                if os.path.basename(orientationFolderAbsPath) != orientationFolderFromMatchingXML:
-                    raise Exception('The orientation folder in ' + matchingXMLAbsPath + ' is ' + orientationFolderFromMatchingXML + '. Expected is ' + os.path.basename(orientationFolderAbsPath))
-
-            s = e.find('Section_Terrain')
-            p = s.find('Planimetrie')
-            if p != None:
-                s.remove(p)
-            p = etree.SubElement(s, 'Planimetrie')
-            b = etree.SubElement(p, 'BoxTerrain')
-            b.text = ' '.join([str(c) for c in (tMinX, tMinY, tMaxX, tMaxY)])
-
-            tileMicMacConfigXMLFile.write(etree.tostring(e, pretty_print=True, encoding='utf-8').decode('utf-8'))
-            tileMicMacConfigXMLFile.close()
-
-            # Create the matching Script
-            tileMatchingScriptOutputFileName = outputFolderAbsPath + '/' + tileName + '_' + os.path.basename(matchingScriptAbsPath)
-            tileMatchingScriptOutputFile = open(tileMatchingScriptOutputFileName, 'w')
-            tileMatchingScriptOutputFile.write(open(matchingScriptAbsPath, 'r').read().replace(os.path.basename(matchingXMLAbsPath),os.path.basename(tileMicMacConfigXMLFileName)))
-            tileMatchingScriptOutputFile.close()
 
             childOutput = etree.SubElement(rootOutput, 'Component')
 
@@ -149,18 +126,19 @@ def run(orientationFolder, homolFolder, matchingXML, matchingScript, numNeighbou
             childOutputId.text = tileName + '_Matching'
 
             childOutputImages = etree.SubElement(childOutput, 'requirelist')
-            childOutputImages.text =  outputFolderName + '/' + os.path.basename(tileImageListOutputFileName)
+            childOutputImages.text =  outputFolder + '/' + os.path.basename(tileImageListOutputFileName)
 
             childOutputRequire = etree.SubElement(childOutput, 'require')
-            childOutputRequire.text = outputFolderName + '/' + os.path.basename(tileMicMacConfigXMLFileName) + " " + \
-                                      outputFolderName + '/' + os.path.basename(tileMatchingScriptOutputFileName) + " " + \
-                                      orientationFolder
+            childOutputRequire.text = orientationFolder + " " + requireLocalChanDescFile
 
             childOutputCommand = etree.SubElement(childOutput, 'command')
-            childOutputCommand.text = 'chmod u+x ' + os.path.basename(tileMatchingScriptOutputFileName) + '; ./' + os.path.basename(tileMatchingScriptOutputFileName)
+            command = 'mm3d Malt Ortho ".*' + imagesFormat + '" ' + os.path.basename(orientationFolder) + ' "BoxTerrain=[' + ','.join([str(e) for e in (tMinX, tMinY,tMaxX, tMaxY)]) + ']"'
+            command += ';mm3d Tawny Ortho-MEC-Malt'
+            command += ';mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=' + tileName + '.ply'
+            childOutputCommand.text = command
 
             childOutputOutput = etree.SubElement(childOutput, 'output')
-            childOutputOutput.text = e.xpath('//TmpResult')[0].text.strip()
+            childOutputOutput.text = tileName + '.ply'
 
     oFile.write(etree.tostring(rootOutput, pretty_print=True, encoding='utf-8').decode('utf-8'))
     oFile.close()
@@ -173,10 +151,9 @@ def argument_parser():
     # fill argument groups
     parser.add_argument('-i', '--inputOrientation',default='', help='Orientation folder. Orientation must be in cartographic reference systems', type=str, required=True)
     parser.add_argument('-t', '--inputHomol',default='', help='Homol folder with the tie-points', type=str, required=True)
-    parser.add_argument('-c', '--matchingXML',default='', help='XML configuration file for MICMAC matching tool within MicMac suite. This will be used for the matching of each tile, but with the addition of a BoxTerrain option', type=str, required=True)
-    parser.add_argument('-s', '--matchingScript',default='', help='Script to run for each tile. One of the commands executed must be MICMAC and it must use the XML specifed with <matchingXML> (this will be replaced accordingly for each tile)', type=str, required=True)
+    parser.add_argument('-e', '--format',default='', help='Images format (example jpg or tif)', type=str, required=True)
 
-    parser.add_argument('--neighbours',default=9, help='For each tile we consider the nearest images', type=int, required=False)
+    parser.add_argument('--neighbours',default=9, help='For each tile we consider the nearest images (default is 9)', type=int, required=False)
     parser.add_argument('-o', '--output', default='', help='pycoeman parallel commands XML configuration file', type=str, required=True)
     parser.add_argument('-f', '--folder', default='', help='Output parallel configuration folder where to store the created files required by the distributed tool', type=str, required=True)
     parser.add_argument('-n', '--num', default='', help='Number of tiles in which the XY extent is divided, specifed as numX,numY', type=str, required=True)
@@ -185,7 +162,7 @@ def argument_parser():
 def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
-        run(a.inputOrientation, a.inputHomol, a.matchingXML, a.matchingScript, a.neighbours, a.output, a.folder, a.num)
+        run(a.inputOrientation, a.inputHomol, a.format, a.neighbours, a.output, a.folder, a.num)
     except Exception as e:
         print(e)
 
