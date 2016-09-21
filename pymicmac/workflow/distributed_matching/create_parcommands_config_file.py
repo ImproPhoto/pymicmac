@@ -55,6 +55,10 @@ def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile,
     # Compute the bounding box of all the camera2DPoints
     minX, minY = numpy.min(camera2DPoints, axis=0)
     maxX, maxY = numpy.max(camera2DPoints, axis=0)
+
+    print("Bounding box: " + ','.join([str(e) for e in [minX, minY,maxX, maxY]]))
+    print("Offset bounding box: " + ','.join([str(e) for e in [0, 0,maxX-minX, maxY-minY]]))
+
     # Compute the size of the tiles in X and Y
     tileSizeX = (maxX - minX) / nX
     tileSizeY = (maxY - minY) / nY
