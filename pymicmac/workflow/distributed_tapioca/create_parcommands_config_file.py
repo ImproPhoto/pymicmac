@@ -19,6 +19,11 @@ def run(inputFile, outputFile, outputFolder, num):
     if num % 2:
         raise Exception('num must be an even number!')
 
+    mmLocalChanDescFile = 'MicMac-LocalChantierDescripteur.xml'
+    requireLocalChanDescFile = ''
+    if os.path.isfile(mmLocalChanDescFile):
+        requireLocalChanDescFile = mmLocalChanDescFile
+
     # Read input XML with valid iamge pairs
     e = etree.parse(inputFile).getroot()
     # Create output folder
@@ -93,7 +98,7 @@ def run(inputFile, outputFile, outputFolder, num):
             childOutput.append(childOutputImages)
 
             childOutputRequire = etree.Element('require')
-            childOutputRequire.text = outputFolderName + '/' + chunkXMLFileName
+            childOutputRequire.text = outputFolderName + '/' + chunkXMLFileName + " " + requireLocalChanDescFile
             childOutput.append(childOutputRequire)
 
             childOutputCommand = etree.Element('command')

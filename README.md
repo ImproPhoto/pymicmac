@@ -134,11 +134,11 @@ In [Implemented MicMac Tools](#implemented-micmac-tools) we detail the current M
 
 ##### Tapioca
 
-The tools `micmac-disttapioca-create-pairs`, `micmac-disttapioca-create-config`, `micmac-disttapioca-combine` together with the parallel commands execution tools of pycoeman to run Tapioca using distributed computing systems.
+The tools `micmac-disttapioca-create-pairs`, `micmac-disttapioca-create-config`, `micmac-disttapioca-combine` together with the parallel commands execution tools of pycoeman are used to run Tapioca in distributed computing systems.
 
 First, in order to run this tool we need a image pairs file. This file list the image pairs that need to be considered when running Tapioca. This is very helpful to avoid running Tapioca with every possible image pair. If you do not have a image pairs file, you can use the tool `micmac-disttapioca-create-pairs` to create a image pairs file with every possible image pair.
 
-Second, we use the `micmac-disttapioca-create-config` to split the image pairs XML file in multiple chunks and to create a XML configuration file:
+Second, we use the `micmac-disttapioca-create-config` to split the image pairs XML file in multiple chunks and to create a XML configuration file suitable for pycoeman:
 
 ```
 micmac-disttapioca-create-config -i [input XML image pairs] -f [folder for output XMLs and file lists, one for each chunk] -n [number of image pairs per output XML, must be even number] -o [XML configuration file]
@@ -151,6 +151,24 @@ After the distributed Tapioca has finished you will have to combine all the outp
 ```
 micmac-disttapioca-combine -i [folder with subfolders, each subfolder with the results of the processing of a chunk] -o [output combined folder]
 ```
+
+##### Matching (Malt, Tawny, Nuage2Ply)
+
+The tool `micmac-distmatching-create-config` together with the parallel commands execution tool of pycoeman is used to run the matching (point cloud generation) in distributed computing systems.
+
+The algorithm used in the tool `micmac-distmatching-create-config` is restricted to aerial images and when the orientation provided by the step 2 of the photogrammetric workflow is in a cartographic reference system. From the estimated camera positions and assuming that the Z direction in which the pictures are taken is always the same and pointing to the ground, the tool computes the XY bounding box that includes all the XY camera positions. The bounding box is divided in tiles like shown in this illustrative example:
+
+![exampledistmatching](docs/distmatching_example.png)
+
+Each tile can be processed by an independent process. For each tile the cameras(images) whose XY position lays within the tile are used. This list is extended to guarantee a minim of 9 images per tile with nearest neighbors. The list is further extended with the homologous images of the 9 selected images.
+
+The tool `micmac-distmatching-create-config` splits the matching of a large list of images into tiles and create a XML configuration file suitable for pycoeman.
+
+```
+micmac-distmatching-create-config -i [orientation folder] -t [Homol folder] -e [images format] -o [XML configuration file] -f [folder for extra tiles information] -n [number of tiles in x and y]
+```
+
+Now, you are ready to run this distributed tool in any of the available hardware systems that are supported by pycoeman (see https://github.com/NLeSC/pycoeman). For this, use the tools `coeman-par-local`, `coeman-par-ssh` or `coeman-par-sge`.
 
 ### Tie-points reduction
 
