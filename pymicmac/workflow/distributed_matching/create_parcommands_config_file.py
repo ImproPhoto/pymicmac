@@ -15,7 +15,7 @@ def getTileIndex(pX, pY, minX, minY, maxX, maxY, nX, nY):
     return (xpos, ypos)
 
 
-def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile, outputFolder, num, includeHomol):
+def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile, outputFolder, num, includeHomol, maltOptions):
     # Check user parameters
     if not os.path.isdir(orientationFolder):
         raise Exception(orientationFolder + ' does not exist')
@@ -142,7 +142,7 @@ def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile,
             childOutputRequire.text = orientationFolder + " " + requireLocalChanDescFile
 
             childOutputCommand = etree.SubElement(childOutput, 'command')
-            command = 'echo -e "\n" | mm3d Malt Ortho ".*' + imagesFormat + '" ' + os.path.basename(orientationFolder) + ' "BoxTerrain=[' + ','.join([str(e) for e in (tMinX, tMinY,tMaxX, tMaxY)]) + ']"'
+            command = 'echo -e "\n" | mm3d Malt Ortho ".*' + imagesFormat + '" ' + os.path.basename(orientationFolder) + ' ' + maltOptions + ' "BoxTerrain=[' + ','.join([str(e) for e in (tMinX, tMinY,tMaxX, tMaxY)]) + ']"'
             command += '; echo -e "\n" | mm3d Tawny Ortho-MEC-Malt'
             command += '; echo -e "\n" | mm3d Nuage2Ply MEC-Malt/NuageImProf_STD-MALT_Etape_8.xml Attr=Ortho-MEC-Malt/Orthophotomosaic.tif Out=' + tileName + '.ply Offs=[' + str(minX) + ',' + str(minY) + ',0]'
             childOutputCommand.text = command
@@ -162,19 +162,19 @@ def argument_parser():
     parser.add_argument('-i', '--inputOrientation',default='', help='Orientation folder. Orientation must be in cartographic reference systems', type=str, required=True)
     parser.add_argument('-t', '--inputHomol',default='', help='Homol folder with the tie-points', type=str, required=True)
     parser.add_argument('-e', '--format',default='', help='Images format (example jpg or tif)', type=str, required=True)
-
     parser.add_argument('--neighbours',default=6, help='For each tile we consider the images whose XY camera position is in the tile and the K nearest images (default is 6) to each vertex of the tile', type=int, required=False)
     parser.add_argument('-o', '--output', default='', help='pycoeman parallel commands XML configuration file', type=str, required=True)
     parser.add_argument('-f', '--folder', default='', help='Output parallel configuration folder where to store the created files required by the distributed tool', type=str, required=True)
     parser.add_argument('-n', '--num', default='', help='Number of tiles in which the XY extent is divided, specifed as numX,numY', type=str, required=True)
     parser.add_argument('--includeHomol', default=False, help='If enabled, for each tile we also consider the homol images of the images in the tile and of the NN images to the vertices [default is disabled]', action='store_true')
+    parser.add_argument('--maltOptions',default='', help='Extra options to pass to Malt (example "SzW=1 Regul=0.01 ZoomF=1"; default is "")', type=str)
 
     return parser
 
 def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
-        run(a.inputOrientation, a.inputHomol, a.format, a.neighbours, a.output, a.folder, a.num, a.includeHomol)
+        run(a.inputOrientation, a.inputHomol, a.format, a.neighbours, a.output, a.folder, a.num, a.includeHomol, a.maltOptions)
     except Exception as e:
         print(e)
 
