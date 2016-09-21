@@ -24,7 +24,7 @@ except:
 setup(
     name='pymicmac',
     version='1.0.0',
-    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.noodles', 'pymicmac.workflow', 'pymicmac.workflow.distributed_tapioca'],
+    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.noodles', 'pymicmac.workflow', 'pymicmac.workflow.distributed_tapioca', 'pymicmac.workflow.distributed_matching',],
     license='',
     long_description=open('README.md').read(),
     author='Oscar Martinez-Rubi',
@@ -39,6 +39,7 @@ setup(
             'micmac-disttapioca-create-pairs=pymicmac.workflow.distributed_tapioca.create_all_image_pairs_file:main',
             'micmac-disttapioca-create-config=pymicmac.workflow.distributed_tapioca.create_parcommands_config_file:main',
             'micmac-disttapioca-combine=pymicmac.workflow.distributed_tapioca.combine_distributed_tapioca_output:main',
+            'micmac-distmatching-create-config=pymicmac.workflow.distributed_matching.create_parcommands_config_file:main',
             'micmac-tapas-log-anal=pymicmac.logsparser.get_tapas_nums:main',
             'micmac-redtiep-log-anal=pymicmac.logsparser.get_redtiep_nums:main',
             'micmac-campari-log-anal=pymicmac.logsparser.get_campari_nums:main',
