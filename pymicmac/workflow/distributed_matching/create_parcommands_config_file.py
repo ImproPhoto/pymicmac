@@ -15,7 +15,7 @@ def getTileIndex(pX, pY, minX, minY, maxX, maxY, nX, nY):
     return (xpos, ypos)
 
 
-def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile, outputFolder, num):
+def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile, outputFolder, num, includeHomol):
     # Check user parameters
     if not os.path.isdir(orientationFolder):
         raise Exception(orientationFolder + ' does not exist')
@@ -107,13 +107,19 @@ def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile,
             imagesTileSet = set(imagesTile)
 
             imagesTileSet.update([images[nni] for nni in kdtree.query((tCenterX, tCenterY), numNeighbours)[1]])
+            imagesTileSet.update([images[nni] for nni in kdtree.query((tMinX, tMinY), numNeighbours)[1]])
+            imagesTileSet.update([images[nni] for nni in kdtree.query((tMinX, tMaxY), numNeighbours)[1]])
+            imagesTileSet.update([images[nni] for nni in kdtree.query((tMaxX, tMinY), numNeighbours)[1]])
+            imagesTileSet.update([images[nni] for nni in kdtree.query((tMaxX, tMaxY), numNeighbours)[1]])
 
-            imagesTileSetFinal = imagesTileSet.copy()
-            # Add to the images for this tile, othe rimages that have tie-points with the current images in the tile
-            for image in imagesTileSet:
-                 imagesTileSetFinal.update([e.replace('.dat','') for e in os.listdir(homolFolder + '/Pastis' + image)])
+            if includeHomol:
+                imagesTileSetFinal = imagesTileSet.copy()
+                # Add to the images for this tile, othe rimages that have tie-points with the current images in the tile
+                for image in imagesTileSet:
+                     imagesTileSetFinal.update([e.replace('.dat','') for e in os.listdir(homolFolder + '/Pastis' + image)])
+                imagesTileSet = imagesTileSetFinal
 
-            if len(imagesTileSetFinal) == 0:
+            if len(imagesTileSet) == 0:
                 raise Exception('EMPTY TILE!')
 
             tileName = 'tile_' + str(i) + '_' + str(j)
@@ -121,7 +127,7 @@ def run(orientationFolder, homolFolder, imagesFormat, numNeighbours, outputFile,
             # Dump the list of images for this tile
             tileImageListOutputFileName = outputFolder + '/' + tileName + '.list'
             tileImageListOutputFile = open(tileImageListOutputFileName, 'w')
-            tileImageListOutputFile.write('\n'.join(sorted(imagesTileSetFinal)))
+            tileImageListOutputFile.write('\n'.join(sorted(imagesTileSet)))
             tileImageListOutputFile.close()
 
             childOutput = etree.SubElement(rootOutput, 'Component')
@@ -157,16 +163,18 @@ def argument_parser():
     parser.add_argument('-t', '--inputHomol',default='', help='Homol folder with the tie-points', type=str, required=True)
     parser.add_argument('-e', '--format',default='', help='Images format (example jpg or tif)', type=str, required=True)
 
-    parser.add_argument('--neighbours',default=9, help='For each tile we consider the nearest images (default is 9)', type=int, required=False)
+    parser.add_argument('--neighbours',default=6, help='For each tile we consider the images whose XY camera position is in the tile and the K nearest images (default is 6) to each vertex of the tile', type=int, required=False)
     parser.add_argument('-o', '--output', default='', help='pycoeman parallel commands XML configuration file', type=str, required=True)
     parser.add_argument('-f', '--folder', default='', help='Output parallel configuration folder where to store the created files required by the distributed tool', type=str, required=True)
     parser.add_argument('-n', '--num', default='', help='Number of tiles in which the XY extent is divided, specifed as numX,numY', type=str, required=True)
+    parser.add_argument('--includeHomol', default=False, help='If enabled, for each tile we also consider the homol images of the images in the tile and of the NN images to the vertices [default is disabled]', action='store_true')
+
     return parser
 
 def main():
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
-        run(a.inputOrientation, a.inputHomol, a.format, a.neighbours, a.output, a.folder, a.num)
+        run(a.inputOrientation, a.inputHomol, a.format, a.neighbours, a.output, a.folder, a.num, a.includeHomol)
     except Exception as e:
         print(e)
 
