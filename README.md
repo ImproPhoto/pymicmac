@@ -5,15 +5,19 @@ pymicmac provides a python interface for MicMac workflows execution and distribu
 MicMac is a photogrammetric suite which contains many different tools to execute photogrammetric workflows.
 In short, a photogrammetric workflow contains at least:
 
- - (1) tie-point detection: extraction of key features in images and cross-match between different images to detect tie-points (points in the images that represent the same physical locations).
+ - (1) tie-points extraction: extraction of key features in images and cross-match between different images to detect tie-points (points in the images that represent the same physical locations).
 
- - (2) Estimation of camera positions and orientations and of calibration parameters: mainly the bundle adjustment but may include some preparation and/or refinement steps.
+ - (2) Bundle block adjustment: estimation of camera positions and orientations and of calibration parameters.
 
- - (3) Dense-matching point cloud generation. 3D projection of image pixels to produce the dense point cloud.
+ - (3) Dense image matching: 3D projection of image pixels to produce the dense point cloud. The 3D points are back projected in the images to correct for projective deformation. This creates a metrically correct True-orthophoto.
 
-pymicmac provides the tool `micmac-run-workflow` to run photogrammetric workflows with a sequence of MicMac commands. The tool uses the sequential commands execution tool of pycoeman which is configured with a XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the MicMac-related processes is monitored. The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by (1) tie-point detection, (2) parameters estimation and (3) matching.  More information in [Instructions](#instructions) section.
+In MicMac (1) is usually done with Tapioca, (2) is done with (Tapas) and (3) is done with Malt, Tawny and Nuage2Ply.
 
-In section [Large image sets](#large-image-sets) we provide some tips on how to use MicMac and pymicmac for processing large image sets using distributed computing (for (1) tie-point detection and (3) matching) and tie-points reduction (for (2) parameters estimation).
+pymicmac provides the tool `micmac-run-workflow` to run photogrammetric workflows with a sequence of MicMac commands. The tool uses the sequential commands execution tool of pycoeman which is configured with a XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the MicMac-related processes is monitored. The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by (1) tie-points extraction, (2) bundle block adjustment and (3) dense image matching.  More information in [Instructions](#instructions) section.
+
+In section [Large image sets](#large-image-sets) we provide some tips on how to use MicMac and pymicmac for processing large image sets using distributed computing for (1) the tie-points extraction and (3) the dense image matching, and tie-points reduction for (2) the bundle block adjustment.
+
+A step-by-step tutorial is also available in [Tutorial](https://github.com/ImproPhoto/pymicmac/tree/master/docs/TUTORIAL.md).
 
 ## Installation
 
@@ -39,13 +43,13 @@ For now pymicmac works only in Linux systems. Requires Python 3.5.
 
 ## Instructions
 
-The tool `micmac-run-workflow` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-point detection, (2) parameters estimation and (3) matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_workflow_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`). Which MicMac commands are executed is specified with a XML configuration file.
+The tool `micmac-run-workflow` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-points extraction, (2) bundle block adjustment and (3) dense image matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_workflow_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`). Which MicMac commands are executed is specified with a XML configuration file.
 
 ### Workflow XML configuration file
 
 The Workflow XML configuration file format is the sequential commands XML configuration file format used by pycoeman (https://github.com/NLeSC/pycoeman). For pymicmac, usually the first tool in any Workflow XML configuration file links to the list of images. So, we can use `<requirelist>` to specify a file with a list of images. Next, some XML examples:
 
-- Tie-points detection:
+- tie-points extraction:
 ```
 <SeqCommands>
   <Component>
@@ -56,7 +60,7 @@ The Workflow XML configuration file format is the sequential commands XML config
 </SeqCommands>
 ```
 
-- Parameter estimation:
+- Bundle block adjustment
 ```
 <SeqCommands>
   <Component>
@@ -68,7 +72,7 @@ The Workflow XML configuration file format is the sequential commands XML config
 </SeqCommands>
 ```
 
-- Matching:
+- Dense image matching:
 ```
 <SeqCommands>
   <Component>
@@ -86,10 +90,12 @@ The Workflow XML configuration file format is the sequential commands XML config
 
 Following the examples above, we could execute a whole photogrammetric workflow with:
 ```
-micmac-run-workflow -e tie-point-detection -c tie-point-detection.xml
-micmac-run-workflow -e param-estimation -c param-estimation.xml
-micmac-run-workflow -e matching -c matching.xml
+micmac-run-workflow -d /path/to/data -e tie-point-detection -c tie-point-detection.xml
+micmac-run-workflow -d /path/to/data -e param-estimation -c param-estimation.xml
+micmac-run-workflow -d /path/to/data -e matching -c matching.xml
 ```
+
+IMPORTANT: all the specified files and folder with the `<require>` and `<requirelist>` as well as the actual files listed in the `<requirelist` must be provided with relative paths to the folder where all the data is. So, the data is in `/path/to/data`, and all the files and folders specified in the `<require>` and `<requirelist>` are relative to this this folder.
 
 ### Monitoring
 
@@ -97,15 +103,15 @@ pycoeman (the tool used by pymicmac to run the commands) stores the log produced
 
 ## Large image sets
 
-For the (1) tie-point detection and (3) matching the processing can be easily enhanced by using distributed computing (clusters or clouds). The reason is that the processes involved can be easily split in independent chunks (in each chunk one or more images are processed). For the (2) parameters estimation, this is not the case since the involved processes usually require having data from all the images simultaneously in memory. In this case, we propose to use tie-points reduction to deal with large image sets.
+For the (1) tie-points extraction and (3) dense image matching the processing can be easily enhanced by using distributed computing (clusters or clouds). The reason is that the processes involved can be easily split in independent chunks (in each chunk one or more images are processed). For the (2) bundle block adjustment, this is not the case since the involved processes usually require having data from all the images simultaneously in memory. In this case, we propose to use tie-points reduction to deal with large image sets.
 
 For more information about distributed computing and tie-points reduction, see our paper (in preparation).
 
 ### Distributed computing
 
-Some parts of the photogrammetric workflow, namely the tie-points detection and the matching, can be boosted by using distributed computing systems since the involved processes can be divided in chunks which are independent to process.
+Some parts of the photogrammetric workflow, namely the tie-points extraction and the dense image matching, can be boosted by using distributed computing systems since the involved processes can be divided in chunks which are independent to process.
 
-For example, the Tapioca tool (tie-points detection) first extracts the features for each image and then cross-matches the features between image pairs. The distributed computing solution that we propose is to divide the list of all image pairs in chunks where each chunk can be processed independently (though they may read sometimes the same images). The results from each chunk processing need to be combined.
+For example, the Tapioca tool (tie-points extraction) first extracts the features for each image and then cross-matches the features between image pairs. The distributed computing solution that we propose is to divide the list of all image pairs in chunks where each chunk can be processed independently (though they may read sometimes the same images). The results from each chunk processing need to be combined.
 
 We use the parallel commands execution tools of pycoeman. The various parallel/distributed commands are specified in a XML configuration file which is similar to the Workflow XML configuration file. An example XML configuration file follows. In this case, we have divided Tapioca processing in two chunks. Each chunk processes the half of the image pairs:
 
@@ -160,7 +166,7 @@ The algorithm used in the tool `micmac-distmatching-create-config` is restricted
 
 ![exampledistmatching](docs/distmatching_example.png)
 
-Each tile can be processed by an independent process. For each tile the cameras(images) whose XY position lays within the tile are used. This list is extended to guarantee a minim of 9 images per tile with nearest neighbors. The list is further extended with the homologous images of the 9 selected images.
+Each tile can be processed by an independent process. For each tile the cameras(images) whose XY position lays within the tile are used. This list is extended to guarantee a minim of 6 images per tile with nearest neighbors.
 
 The tool `micmac-distmatching-create-config` splits the matching of a large list of images into tiles and create a XML configuration file suitable for pycoeman.
 
@@ -172,13 +178,13 @@ Now, you are ready to run this distributed tool in any of the available hardware
 
 ### Tie-points reduction
 
-Add a tie-point reduction component in the chain for parameters estimation.
+Add a tie-points reduction component in the chain for parameters estimation.
 
 Two tools can be used for this purpose: `RedTieP` and `OriRedTieP`. The first one requires to run the tool `NO_AllOri2Im` before and the second requires to run the tool `Martini` before.
 
 For examples, see `tests/param-estimation_reduction.xml` and  `tests/param-estimation_orireduction.xml`
 
-When a tie-point reduction is used with either of the available tools, the tool `micmac-homol-compare` can be used to compute the reduction factors.
+When a tie-points reduction is used with either of the available tools, the tool `micmac-homol-compare` can be used to compute the reduction factors.
 
 Note that after running the tie-points reduction tools, the Homol folder has to be changed (see the examples).
 Also note that when running `RedTieP`, it is possible to use parallel execution mode together with the tool `micmac-noodles`. See the example in `tests/param-estimation_reduction.xml`.
