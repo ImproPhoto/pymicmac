@@ -1,6 +1,6 @@
 # pymicmac
 
-pymicmac provides a python interface for MicMac workflows execution and distributed computing tools for MicMac. pymicmac uses pycoeman (Python Commands Execution Manager) (https://github.com/NLeSC/pycoeman) which also provides CPU/MEM/disk monitoring.
+`pymicmac` provides a Python interface for MicMac workflows execution and distributed computing tools for MicMac. `pymicmac` uses `pycoeman` (Python Commands Execution Manager) (https://github.com/NLeSC/pycoeman) which also provides CPU/MEM/disk monitoring.
 
 MicMac is a photogrammetric suite which contains many different tools to execute photogrammetric workflows.
 In short, a photogrammetric workflow contains at least:
@@ -13,7 +13,7 @@ In short, a photogrammetric workflow contains at least:
 
 The MicMac suite contains several tools dedicated to each of the steps of the programmatic worflow. The tie-point detection is done with `Tapioca`, the bundle block adjustment is done with `Tapas` and the dense matching and point cloud generation is done with `Malt`, `Tawny` and `Nuage2Ply`.
 
-pymicmac provides the tool `micmac-run-workflow` to run photogrammetric workflows with a sequence of MicMac commands. The tool uses the sequential commands execution tool of pycoeman which is configured with a XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the MicMac-related processes is monitored. The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by tie-points extraction, bundle block adjustment and dense image matching.  More information in [Instructions](#instructions) section.
+pymicmac provides the tool `micmac-run-workflow` to run photogrammetric workflows with a sequence of MicMac commands. The tool uses the sequential commands execution tool of `pycoeman` which is configured with a XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the MicMac-related processes is monitored. The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by tie-points extraction, bundle block adjustment and dense image matching.  More information in [Instructions](#instructions) section.
 
 In section [Large image sets](#large-image-sets) we provide some tips on how to use MicMac and pymicmac for processing large image sets using distributed computing for the tie-points extraction and the dense image matching, and tie-points reduction for the bundle block adjustment.
 
@@ -35,11 +35,11 @@ or install directly with:
 pip install git+https://github.com/ImproPhoto/pymicmac
 ```
 
-Python dependencies: pycoeman and noodles (see https://github.com/NLeSC/pycoeman and https://github.com/NLeSC/noodles for installation instructions)
+Python dependencies: `pycoeman` and `noodles` (see https://github.com/NLeSC/pycoeman and https://github.com/NLeSC/noodles for installation instructions)
 
-Other python  dependencies (numpy, tabulate, matplotlib, lxml) are automatically installed by `pip install .` but some system libraries have to be installed (for example freetype is required by matplotlib and may need to be installed by the system admin)
+Other Python  dependencies (numpy, tabulate, matplotlib, lxml) are automatically installed by `pip install .` but some system libraries have to be installed (for example freetype is required by matplotlib and may need to be installed by the system admin)
 
-For now pymicmac works only in Linux systems. Requires Python 3.5.
+For now `pymicmac` works only in Linux systems. Requires Python 3.5.
 
 ## Instructions
 
@@ -47,7 +47,7 @@ The tool `micmac-run-workflow` is used to execute entire photogrammetric workflo
 
 ### Workflow XML configuration file
 
-The Workflow XML configuration file format is the sequential commands XML configuration file format used by pycoeman (https://github.com/NLeSC/pycoeman). For pymicmac, usually the first tool in any Workflow XML configuration file links to the list of images. So, we can use `<requirelist>` to specify a file with a list of images. Next, some XML examples:
+The Workflow XML configuration file format is the sequential commands XML configuration file format used by `pycoeman` (https://github.com/NLeSC/pycoeman). For pymicmac, usually the first tool in any Workflow XML configuration file links to the list of images. So, we can use `<requirelist>` to specify a file with a list of images. Next, some XML examples:
 
 - tie-points extraction:
 ```
