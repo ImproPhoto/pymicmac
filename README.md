@@ -1,17 +1,28 @@
 # pymicmac
 
-`pymicmac` provides a Python interface for MicMac workflows execution and distributed computing tools for MicMac. `pymicmac` uses `pycoeman` (Python Commands Execution Manager) (https://github.com/NLeSC/pycoeman) which also provides CPU/MEM/disk monitoring.
+This software is a result of the Netherlands eScience Center project [Improving Open-Source Photogrammetric Workflows for Processing Big Datasets] (https://www.esciencecenter.nl/project/improving-open-source-photogrammetric-workflows-for-processing-big-datasets). 
 
-MicMac is a photogrammetric suite which contains many different tools to execute photogrammetric workflows.
+`pymicmac` provides a Python interface for `MicMac` workflows execution and distributed computing tools for `MicMac`. 
+[`MicMac`](http://micmac.ensg.eu) is a photogrammetric suite which contains many different tools to execute photogrammetric workflows.
+
 In short, a photogrammetric workflow contains at least:
 
- - Tie-points detection: key point features, representing the same physical locaitons, are extracted and cross-matched between different images.
+ - **Tie-points detection.** First,  key  features  in  the  images  are  extracted.   This  is  done
+for example with the [SIFT algorithm](https://www.cs.ubc.ca/~lowe/papers/ijcv04.pdf).  Second, the key features are cross-matched
+between different images to detect points in the images that represent the same physical
+locations and that are visible in different images.  The detected points are called tie-points
+(they are also referred to as homologous points in related literature)
 
  - Bundle block adjustment: the camera positions and orientations are estimated and the parameters calibrated.
 
  - Dense image matching: The detected tie-points are matched and 3D projected to produce the dense point cloud. The 3D points are back projected in the images to correct for projective deformation. This creates a metrically correct True-orthophoto.
 
 The MicMac suite contains several tools dedicated to each of the steps of the programmatic worflow. The tie-point detection is done with `Tapioca`, the bundle block adjustment is done with `Tapas` and the dense matching and point cloud generation is done with `Malt`, `Tawny` and `Nuage2Ply`.
+
+ `pymicmac` addresses two main issues with `MicMac`:
+
+1 `pymicmac` helps you when running a sequence of `MicMac` commands. The sequence of commands is defined in a XML. During execution pymicmac creates isolated execution folders separating the input data from the intermediates and the output data. pymicmac also adds CPU/MEM monitoring for the commands.
+2 pymicmac contains distributed computing versions of `Tapioca` and of a matching pipeline (`Malt`, `Tawny`, `Nuage2Ply`). This allows to run `Tapioca` and the matching pipeline in distributed systems such as SGE clusters or a bunch of ssh-reachable machines.
 
 pymicmac provides the tool `micmac-run-workflow` to run photogrammetric workflows with a sequence of MicMac commands. The tool uses the sequential commands execution tool of `pycoeman` which is configured with a XML configuration file that defines a chain of MicMac commands to be executed sequentially. During the execution of each command the CPU/MEM/disk usage of the MicMac-related processes is monitored. The tool can be configured to run a whole photogrammetric workflow at once, or to run it split in pieces (recommended), for example by tie-points extraction, bundle block adjustment and dense image matching.  More information in [Instructions](#instructions) section.
 
