@@ -31,7 +31,7 @@ setup(
     author_email='o.rubi@esciencecenter.nl',
     url='https://github.com/ImproPhoto/pymicmac',
     install_requires=[
-          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles', 'pycoeman', 'scipy'
+          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles==0.2.4', 'pycoeman', 'scipy'
     ],
     entry_points={
         'console_scripts': [
