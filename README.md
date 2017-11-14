@@ -105,7 +105,7 @@ pycoeman (the tool used by pymicmac to run the commands) stores the log produced
 
 For the (1) tie-points extraction and (3) dense image matching the processing can be easily enhanced by using distributed computing (clusters or clouds). The reason is that the processes involved can be easily split in independent chunks (in each chunk one or more images are processed). For the (2) bundle block adjustment, this is not the case since the involved processes usually require having data from all the images simultaneously in memory. In this case, we propose to use tie-points reduction to deal with large image sets.
 
-For more information about distributed computing and tie-points reduction, see our paper (in preparation).
+For more information about distributed computing and tie-points reduction, see our paper: Martinez-Rubi, Oscar, Francesco Nex, Marc Pierrot-Deseilligny, and Ewelina Rupnik. “Improving FOSS Photogrammetric Workflows for Processing Large Image Datasets.” Open Geospatial Data, Software and Standards 2 (May 15, 2017): 12. [https://doi.org/10.1186/s40965-017-0024-5.](https://doi.org/10.1186/s40965-017-0024-5).
 
 ### Distributed computing
 
