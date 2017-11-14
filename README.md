@@ -13,9 +13,9 @@ between different images to detect points in the images that represent the same 
 locations and that are visible in different images.  The detected points are called tie-points
 (they are also referred to as homologous points in related literature)
 
- - **Bundle block adjustment.*** The camera positions and orientations are estimated and the parameters calibrated.
+ - **Bundle block adjustment.** The camera positions and orientations are estimated and the parameters calibrated.
 
- - **Dense image matching** The detected tie-points are matched and 3D projected to produce the dense point cloud. The 3D points are back projected in the images to correct for projective deformation. This creates a metrically correct True-orthophoto.
+ - **Dense image matching.** The detected tie-points are matched and 3D projected to produce the dense point cloud. The 3D points are back projected in the images to correct for projective deformation. This creates a metrically correct True-orthophoto.
 
 The MicMac suite contains several tools dedicated to each of the steps of the programmatic worflow. The tie-point detection is done with `Tapioca`, the bundle block adjustment is done with `Tapas` and the dense matching and point cloud generation is done with `Malt`, `Tawny` and `Nuage2Ply`.
 
