@@ -1,6 +1,6 @@
 # pymicmac
 
-This software is a result of the Netherlands eScience Center project [Improving Open-Source Photogrammetric Workflows for Processing Big Datasets] (https://www.esciencecenter.nl/project/improving-open-source-photogrammetric-workflows-for-processing-big-datasets). 
+This software is a result of the Netherlands eScience Center project [Improving Open-Source Photogrammetric Workflows for Processing Big Datasets](https://www.esciencecenter.nl/project/improving-open-source-photogrammetric-workflows-for-processing-big-datasets). 
 
 `pymicmac` provides a Python interface for `MicMac` workflows execution and distributed computing tools for `MicMac`. 
 [`MicMac`](http://micmac.ensg.eu) is a photogrammetric suite which contains many different tools to execute photogrammetric workflows.
