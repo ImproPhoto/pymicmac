@@ -2,10 +2,11 @@
 
 [![Build Status](https://travis-ci.org/ImproPhoto/pymicmac.svg?branch=master)](https://travis-ci.org/ImproPhoto/pymicmac)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/cedd804840ca4de0af4c6bae6939b28d)](https://www.codacy.com/app/c-meijer/pymicmac?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ImproPhoto/pymicmac&amp;utm_campaign=Badge_Grade)
+[![Anaconda-Server Badge](https://anaconda.org/improphoto/pymicmac/badges/installer/conda.svg)](https://conda.anaconda.org/improphoto)
 
-This software is a result of the Netherlands eScience Center project [Improving Open-Source Photogrammetric Workflows for Processing Big Datasets](https://www.esciencecenter.nl/project/improving-open-source-photogrammetric-workflows-for-processing-big-datasets). 
+This software is a result of the Netherlands eScience Center project [Improving Open-Source Photogrammetric Workflows for Processing Big Datasets](https://www.esciencecenter.nl/project/improving-open-source-photogrammetric-workflows-for-processing-big-datasets).
 
-`pymicmac` provides a Python interface for `MicMac` workflows execution and distributed computing tools for `MicMac`. 
+`pymicmac` provides a Python interface for `MicMac` workflows execution and distributed computing tools for `MicMac`.
 [`MicMac`](http://micmac.ensg.eu) is a photogrammetric suite which contains many different tools to execute photogrammetric workflows.
 
 In short, a photogrammetric workflow contains at least:
@@ -36,23 +37,25 @@ A step-by-step tutorial is also available in [Tutorial](https://github.com/Impro
 
 ## Installation
 
+The easiest way to install pymicmac is by using the [Anaconda package](https://anaconda.org/ImproPhoto/pymicmac).
+
+```bash
+conda install -c improphoto -c conda-forge pymicmac
+```
+
+## Development installation
+
 Clone this repository and install it with pip (using a virtualenv is recommended):
 
 ```
 git clone https://github.com/ImproPhoto/pymicmac
 cd pymicmac
-pip install .
-```
-
-or install directly with:
- 
-```
-pip install git+https://github.com/ImproPhoto/pymicmac
+pip install -e .
 ```
 
 Python dependencies: `pycoeman` and `noodles` (see https://github.com/NLeSC/pycoeman and https://github.com/NLeSC/noodles for installation instructions)
 
-Other Python  dependencies (numpy, tabulate, matplotlib, lxml) are automatically installed by `pip install .` but some system libraries have to be installed (for example freetype is required by matplotlib and may need to be installed by the system admin)
+Other Python  dependencies (numpy, tabulate, matplotlib, lxml) are automatically installed by `pip install -e .` but some system libraries have to be installed (for example freetype is required by matplotlib and may need to be installed by the system admin)
 
 For now `pymicmac` works only in Linux systems. Requires Python 3.5.
 
@@ -110,7 +113,7 @@ micmac-run-workflow -d /path/to/data -e param-estimation -c param-estimation.xml
 micmac-run-workflow -d /path/to/data -e matching -c matching.xml
 ```
 
-*NOTE*: all file and folder names, specified in `<require>` and `<requirelist>` must be provided relative to the folder where all the data is - `/path/to/data`. 
+*NOTE*: all file and folder names, specified in `<require>` and `<requirelist>` must be provided relative to the folder where all the data is - `/path/to/data`.
 
 ### Monitoring
 
@@ -124,7 +127,7 @@ For more information about distributed computing and tie-points reduction, see o
 
 ### Distributed computing
 
-Some steps of the photogrammetric workflow, namely the tie-points extraction and the dense image matching, can be executed more efficiently on distributed computing systems exploiting the innate data parallelism in photogrametry. 
+Some steps of the photogrammetric workflow, namely the tie-points extraction and the dense image matching, can be executed more efficiently on distributed computing systems exploiting the innate data parallelism in photogrametry.
 
 For example, the `Tapioca` tool (tie-points extraction) first extracts the features for each image and then cross-matches the features between image pairs. The proposed distributed computing solution divides the list of all image pairs in chunks where each chunk can be processed mostly independently. At the end of the results from each chunk processing need to be combined.
 
@@ -193,11 +196,9 @@ Next, the distributed tool can be executed on any hardware systems supported by 
 
 For more efficient workflow execution, we propose to perform a tie-points reduction step before the bundle adjustment. This extra step is added to the processing chain of the parameters estimation step. For detailed explanation, please refer to the Tie-point reduction section in this [report](http://knowledge.esciencecenter.nl/content/report-tie-points.pdf).
 
-There are two tools for this purpose: `RedTieP` and `OriRedTieP`. The former tool should be preceeded by `NO_AllOri2Im` and  `Martini` should preceed the latter. For examples, see `tests/param-estimation_reduction.xml` and  `tests/param-estimation_orireduction.xml`. 
+There are two tools for this purpose: `RedTieP` and `OriRedTieP`. The former tool should be preceeded by `NO_AllOri2Im` and  `Martini` should preceed the latter. For examples, see `tests/param-estimation_reduction.xml` and  `tests/param-estimation_orireduction.xml`.
 
 Note that after running the tie-points reduction tools, the Homol folder has to be changed (see the examples).
 Also note that when running `RedTieP`, it is possible to use parallel execution mode together with the tool `micmac-noodles`. See the example in `tests/param-estimation_reduction.xml`.
 
 The`micmac-homol-compare` tool can be used to compute the reduction factors.
-
-
