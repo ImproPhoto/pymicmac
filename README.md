@@ -55,7 +55,7 @@ For now `pymicmac` works only in Linux systems. Requires Python 3.5.
 
 ## Instructions
 
-The tool `micmac-run-workflow` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: tie-points extraction, bundle block adjustment and dense image matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_workflow_test.sh`) or can be imported as a python module (see examples in `tests/run_tiepoint_detection_example.py`, `tests/run_param_estimation_example.py` and `tests/run_matching_example.py`). Which `MicMac` commands are executed is specified with an XML configuration file.
+The tool `micmac-run-workflow` is used to execute entire photogrammetric workflows with MicMac or portions of it. We recommend splitting the workflow in three pieces: (1) tie-points extraction, (2) bundle block adjustment and (3) dense image matching. Each time the tool is executed, it creates an independent execution folder to isolate the processing from the input data. The tool can be executed as a python script (see example in `tests/run_workflow_test.sh`) or can be imported as a python module. Which MicMac commands are executed is specified with a XML configuration file.
 
 ### Workflow XML configuration file
 

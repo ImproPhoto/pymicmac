@@ -6,6 +6,7 @@
 #      <SzCaptMm> 3.52 4.69 </SzCaptMm>
 #      <ShortName> Aquaris E5 HD </ShortName>
 # </CameraEntry>
+set -e
 
 micmac-disttapioca-create-pairs -i . -f jpg -o ImagePairs.xml
 micmac-disttapioca-create-config -i ImagePairs.xml -o DistributedTapioca.xml -f DistributedTapioca -n 6
