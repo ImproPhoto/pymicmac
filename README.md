@@ -196,3 +196,5 @@ Note that after running the tie-points reduction tools, the Homol folder has to 
 Also note that when running `RedTieP`, it is possible to use parallel execution mode together with the tool `micmac-noodles`. See the example in `tests/param-estimation_reduction.xml`.
 
 The`micmac-homol-compare` tool can be used to compute the reduction factors.
+
+
