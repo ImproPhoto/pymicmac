@@ -40,7 +40,7 @@ A step-by-step tutorial is also available in [Tutorial](https://github.com/Impro
 The easiest way to install pymicmac is by using the [Anaconda package](https://anaconda.org/ImproPhoto/pymicmac).
 
 ```bash
-conda install -c improphoto pymicmac
+conda install -c improphoto -c conda-forge pymicmac
 ```
 
 ## Development installation
