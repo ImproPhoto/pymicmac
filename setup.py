@@ -8,6 +8,9 @@ if out.decode(sys.stdout.encoding).count('MicMac') == 0:
     print('Installation could not be done: MicMac (mm3d) could not be found.')
     sys.exit(1)
 
+with open('requirements.txt') as f:
+    required = f.read().splitlines()
+
 setup(
     name='pymicmac',
     version='1.0.0',
@@ -17,9 +20,7 @@ setup(
     author='Oscar Martinez-Rubi',
     author_email='o.rubi@esciencecenter.nl',
     url='https://github.com/ImproPhoto/pymicmac',
-    install_requires=[
-          'numpy', 'tabulate', 'matplotlib', 'lxml', 'noodles==0.2.4', 'pycoeman==1.1.1', 'scipy'
-    ],
+    install_requires=required,
     entry_points={
         'console_scripts': [
             'micmac-run-workflow=pymicmac.workflow.run_workflow:main',

@@ -1,0 +1,7 @@
+numpy
+tabulate
+matplotlib
+lxml
+noodles==0.2.4
+pycoeman==1.1.1
+scipy
