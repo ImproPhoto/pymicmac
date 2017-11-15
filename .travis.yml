@@ -1,0 +1,32 @@
+language: generic
+dist: trusty
+sudo: required
+
+os:
+  - linux
+
+env:
+  matrix:
+    - PYTHON_VERSION=3.5
+  global:
+    - MINCONDA_VERSION="latest"
+    - MINCONDA_LINUX="Linux-x86_64"
+
+before_install:
+  - MINCONDA_PYTHON_VERSION=3;
+  - MINCONDA_OS=$MINCONDA_LINUX;
+  - wget "http://repo.continuum.io/miniconda/Miniconda$MINCONDA_PYTHON_VERSION-$MINCONDA_VERSION-$MINCONDA_OS.sh" -O miniconda.sh;
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda config --set always_yes yes
+  - conda update -q conda
+  - conda create -q -n test-environment python=$PYTHON_VERSION lxml matplotlib
+  - source activate test-environment
+  - conda install -c conda-forge -c improphoto micmac
+
+install:
+  - pip install .
+
+script:
+  - cd tests
+  - ./run_distributed_tapioca_local_test.sh

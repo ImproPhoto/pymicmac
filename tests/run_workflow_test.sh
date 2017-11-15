@@ -6,7 +6,7 @@ convert --version
 echo "exiv2:"
 exiv2 --version
 echo "exiftool:"
-exiftool --version
+exiftool -ver
 
 echo "micmac-run-workflow -d . -e tie-point-detection -c tie-point-detection.xml"
 micmac-run-workflow -d . -e tie-point-detection -c tie-point-detection.xml
