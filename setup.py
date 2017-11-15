@@ -3,7 +3,8 @@ import sys
 from setuptools import setup
 
 # First we check MicMac in installed and in the PATH
-(out,err) = subprocess.Popen('mm3d -help', shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+(out, err) = subprocess.Popen('mm3d -help', shell=True,
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
 if out.decode(sys.stdout.encoding).count('MicMac') == 0:
     print('Installation could not be done: MicMac (mm3d) could not be found.')
     sys.exit(1)
@@ -14,7 +15,8 @@ with open('requirements.txt') as f:
 setup(
     name='pymicmac',
     version='1.0.0',
-    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.noodles', 'pymicmac.workflow', 'pymicmac.workflow.distributed_tapioca', 'pymicmac.workflow.distributed_matching',],
+    packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.noodles',
+              'pymicmac.workflow', 'pymicmac.workflow.distributed_tapioca', 'pymicmac.workflow.distributed_matching', ],
     license='',
     long_description=open('README.md').read(),
     author='Oscar Martinez-Rubi',

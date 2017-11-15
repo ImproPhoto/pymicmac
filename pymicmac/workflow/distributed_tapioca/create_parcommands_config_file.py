@@ -1,7 +1,10 @@
 #!/usr/bin/python
-import argparse,shutil,os
+import argparse
+import shutil
+import os
 from lxml import etree
 from pymicmac import utils_execution
+
 
 def run(inputFile, outputFile, outputFolder, num):
     # Check user parameters
@@ -44,7 +47,7 @@ def run(inputFile, outputFile, outputFolder, num):
         # Add pair and image to current chunk
         pair = pairs[i].text
         pairsChunk.append(pair)
-        (image1,image2) = pair.split()
+        (image1, image2) = pair.split()
 
         # image1AbsPath = os.path.abspath(image1)
         # image2AbsPath = os.path.abspath(image2)
@@ -64,7 +67,8 @@ def run(inputFile, outputFile, outputFolder, num):
         imagesSetChunk.add(image1)
         imagesSetChunk.add(image2)
 
-        if (((i+1) % num) == 0) or (i == (numPairs-1)): # if currernt chunk is full or we just added the lsat pair, we need to store the chunk data
+        if (((i + 1) % num) == 0) or (i == (numPairs - 1)
+                                      ):  # if currernt chunk is full or we just added the lsat pair, we need to store the chunk data
             # Define output files names and absolute paths for this chunk
             chunkXMLFileName = str(chunkId) + '_' + os.path.basename(inputFile)
             chunkImagesListFileName = chunkXMLFileName + '.list'
@@ -79,7 +83,11 @@ def run(inputFile, outputFile, outputFolder, num):
                 childChunk = etree.Element('Cple')
                 childChunk.text = pairChunk
                 rootChunk.append(childChunk)
-            chunkXMLFile.write(etree.tostring(rootChunk, pretty_print=True, encoding='utf-8').decode('utf-8'))
+            chunkXMLFile.write(
+                etree.tostring(
+                    rootChunk,
+                    pretty_print=True,
+                    encoding='utf-8').decode('utf-8'))
             chunkXMLFile.close()
             # Dump the .list file with the images in this chunk
             for image in imagesSetChunk:
@@ -94,11 +102,12 @@ def run(inputFile, outputFile, outputFolder, num):
             childOutput.append(childOutputId)
 
             childOutputImages = etree.Element('requirelist')
-            childOutputImages.text =  outputFolderName + '/' + chunkImagesListFileName
+            childOutputImages.text = outputFolderName + '/' + chunkImagesListFileName
             childOutput.append(childOutputImages)
 
             childOutputRequire = etree.Element('require')
-            childOutputRequire.text = outputFolderName + '/' + chunkXMLFileName + " " + requireLocalChanDescFile
+            childOutputRequire.text = outputFolderName + '/' + \
+                chunkXMLFileName + " " + requireLocalChanDescFile
             childOutput.append(childOutputRequire)
 
             childOutputCommand = etree.Element('command')
@@ -114,16 +123,23 @@ def run(inputFile, outputFile, outputFolder, num):
             # Empty the chunk
             pairsChunk = []
             imagesSetChunk = set([])
-            chunkId+=1
+            chunkId += 1
 
-    oFile.write(etree.tostring(rootOutput, pretty_print=True, encoding='utf-8').decode('utf-8'))
+    oFile.write(
+        etree.tostring(
+            rootOutput,
+            pretty_print=True,
+            encoding='utf-8').decode('utf-8'))
     oFile.close()
 
     # for imageAbsPath in errorImagesSet:
     #     print("WARNING: " + os.path.basename(imageAbsPath) + " is not located in " + imageAbsPath + '. If you use relative paths or just the image names, be careful to put the XML in the same folder with the images')
 
     for image in errorImagesSet:
-        print("WARNING: " + image + " could not be found. The XML with the valid image pairs must be located in the same folder with the images")
+        print(
+            "WARNING: " +
+            image +
+            " could not be found. The XML with the valid image pairs must be located in the same folder with the images")
 
 
 def argument_parser():
@@ -131,11 +147,36 @@ def argument_parser():
     description = "Splits a valid image pairs file suitable for Tapioca into chunks. For each chunk, it adds a component in a pycomean parallel commands XML configuration file, and it stores in a parallel configuration folder the information of the chunk "
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
-    parser.add_argument('-i', '--input', default='', help='Input XML valid image pair file', type=str, required=True)
-    parser.add_argument('-o', '--output', default='', help='pycoeman parallel commands XML configuration file', type=str, required=True)
-    parser.add_argument('-f', '--folder', default='', help='Output parallel configuration folder where to store the created files. For each chunk there will be a XML file with image pairs and a .list file with a list of files', type=str, required=True)
-    parser.add_argument('-n', '--num', default='', help='Number of image pairs per chunk (must be even number)', type=int, required=True)
+    parser.add_argument(
+        '-i',
+        '--input',
+        default='',
+        help='Input XML valid image pair file',
+        type=str,
+        required=True)
+    parser.add_argument(
+        '-o',
+        '--output',
+        default='',
+        help='pycoeman parallel commands XML configuration file',
+        type=str,
+        required=True)
+    parser.add_argument(
+        '-f',
+        '--folder',
+        default='',
+        help='Output parallel configuration folder where to store the created files. For each chunk there will be a XML file with image pairs and a .list file with a list of files',
+        type=str,
+        required=True)
+    parser.add_argument(
+        '-n',
+        '--num',
+        default='',
+        help='Number of image pairs per chunk (must be even number)',
+        type=int,
+        required=True)
     return parser
+
 
 def main():
     try:
@@ -143,6 +184,7 @@ def main():
         run(a.input, a.output, a.folder, a.num)
     except Exception as e:
         print(e)
+
 
 if __name__ == "__main__":
     main()
