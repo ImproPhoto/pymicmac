@@ -24,6 +24,7 @@ before_install:
   - conda create -q -n test-environment python=$PYTHON_VERSION numpy
   - source activate test-environment
   - conda install -c conda-forge -c improphoto micmac
+  - apt install gcc
 
 
 install:
