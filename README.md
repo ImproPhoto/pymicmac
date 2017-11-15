@@ -42,7 +42,7 @@ pip install .
 ```
 
 or install directly with:
-
+ 
 ```
 pip install git+https://github.com/ImproPhoto/pymicmac
 ```
