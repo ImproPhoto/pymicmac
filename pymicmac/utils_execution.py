@@ -1,6 +1,8 @@
- #!/usr/bin/python
-import os,subprocess
+#!/usr/bin/python
+import os
+import subprocess
 from lxml import etree
+
 
 def readGCPXMLFile(xmlFile):
     gcpsXYZ = {}
@@ -24,12 +26,15 @@ def readGCPXMLFile(xmlFile):
             gcpsXYZ[gcp] = (x, y, z)
     return (gcpsXYZ, cpsXYZ)
 
+
 def getSize(absPath):
-    (out,err) = subprocess.Popen('du -sb ' + absPath, shell = True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
+    (out, _) = subprocess.Popen('du -sb ' + absPath, shell=True,
+                                  stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     try:
         return int(out.split()[0])
-    except:
+    except BaseException:
         return -1
+
 
 def apply_argument_parser(argumentsParser, options=None):
     """ Apply the argument parser. """

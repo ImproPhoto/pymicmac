@@ -1,7 +1,10 @@
 #!/usr/bin/python
-import sys, os, argparse
+import sys
+import os
+import argparse
 from tabulate import tabulate
 from pymicmac import utils_execution
+
 
 def run(foldersNames):
     table = []
@@ -17,11 +20,15 @@ def run(foldersNames):
             worsts = []
             c1 = 0
             for line in lines:
-              if line.count('Residual = '):
-                  c1+=1
-                  residuals.append(line.split(';;')[0].replace('| |  Residual = ',''))
-              elif line.count(' Worst, Res '):
-                  worsts.append(line.split('for')[0].replace('| |  Worst, Res ',''))
+                if line.count('Residual = '):
+                    c1 += 1
+                    residuals.append(
+                        line.split(';;')[0].replace(
+                            '| |  Residual = ', ''))
+                elif line.count(' Worst, Res '):
+                    worsts.append(
+                        line.split('for')[0].replace(
+                            '| |  Worst, Res ', ''))
             if len(worsts) and len(residuals):
                 table.append([folderName, str(c1), residuals[-1], worsts[-1]])
             else:
@@ -35,12 +42,20 @@ def run(foldersNames):
     print(tabulate(table, headers=header))
     print()
 
+
 def argument_parser():
-   # define argument menu
+                 # define argument menu
     description = "Gets statistics of Tapas runs in one or more execution folders"
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-f', '--folders',default='', help='Comma-separated list of execution folders where to look for the Tapas.log files', type=str, required=True)
+    parser.add_argument(
+        '-f',
+        '--folders',
+        default='',
+        help='Comma-separated list of execution folders where to look for the Tapas.log files',
+        type=str,
+        required=True)
     return parser
+
 
 def main():
     try:
@@ -48,6 +63,7 @@ def main():
         run(a.folders)
     except Exception as e:
         print(e)
+
 
 if __name__ == "__main__":
     main()

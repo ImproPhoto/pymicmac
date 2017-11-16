@@ -8,18 +8,17 @@ from noodles.run.thread_pool import (thread_pool)
 from noodles.run.scheduler import (Scheduler)
 from noodles.display import NCDisplay
 
-from noodles.display import SimpleDisplay
 
 import subprocess
 import sys
 import argparse
 import json
-import time
 import shlex
 import os
 
 import threading
 from itertools import repeat
+
 
 @push_map
 def log_job_start(key, job):
@@ -32,6 +31,7 @@ def log_job_schedule(key, job):
 
 
 logFolderAbsPath = ""
+
 
 class Job:
     def __init__(self, task, exclude, state, job, key):
@@ -46,17 +46,17 @@ def dynamic_exclusion_worker(display, n_threads):
     """This worker allows mutualy exclusive jobs to start safely. The
     user provides the information on which jobs exclude the simultaneous
     execution of other jobs::
-        a = task()
-        b = task()
-        update_hints(a, {'task': '1', 'exclude': ['2']})
-        update_hints(b, {'task': '2', 'exclude': ['1']})
-        run(gather(a, b))
+                                    a = task()
+                                    b = task()
+                                    update_hints(a, {'task': '1', 'exclude': ['2']})
+                                    update_hints(b, {'task': '2', 'exclude': ['1']})
+                                    run(gather(a, b))
     Using this worker, when task ``a`` is sent to the underlying worker,
     task ``b`` is blocked until ``a`` completes, and vice versa.
     """
     LogQ = Queue()
 
-    S = Scheduler(error_handler=display.error_handler)
+    Scheduler(error_handler=display.error_handler)
 
     threading.Thread(
         target=patch,
@@ -143,7 +143,7 @@ def system_command(cmd, task):
         cmd_split, stdout=subprocess.PIPE,
         stderr=subprocess.PIPE, universal_newlines=True)
     p.check_returncode()
-    oFile = open(os.path.join(logFolderAbsPath, task + '.log'),'w')
+    oFile = open(os.path.join(logFolderAbsPath, task + '.log'), 'w')
     oFile.write(p.stdout)
     oFile.close()
     return p.stdout
@@ -155,26 +155,29 @@ def make_job(cmd, task_id, exclude):
                              'exclude': [str(x) for x in exclude]})
     return j
 
+
 def error_filter(ex_type, ex_value, ex_tb):
     if ex_type is subprocess.CalledProcessError:
         return ex_value.stderr
     else:
         return None
 
+
 def runNoodles(jsonFile, logFolder, numThreads):
     global logFolderAbsPath
     logFolderAbsPath = os.path.abspath(logFolder)
     os.makedirs(logFolderAbsPath)
     input = json.load(open(jsonFile, 'r'))
-    if input[0].get('task') == None:
+    if input[0].get('task') is None:
         jobs = [make_job(td['command'],
-                     td['id'], td['exclude']) for td in input]
+                         td['id'], td['exclude']) for td in input]
     else:
         jobs = [make_job(td['command'],
-                     td['task'], td['exclude']) for td in input]
+                         td['task'], td['exclude']) for td in input]
     wf = noodles.gather(*jobs)
     with NCDisplay(error_filter) as display:
         run(wf, display=display, n_threads=numThreads)
+
 
 def main():
     parser = argparse.ArgumentParser(
@@ -191,6 +194,7 @@ def main():
     args = parser.parse_args(sys.argv[1:])
 
     runNoodles(args.target, args.log, args.n_threads)
+
 
 if __name__ == "__main__":
     main()
