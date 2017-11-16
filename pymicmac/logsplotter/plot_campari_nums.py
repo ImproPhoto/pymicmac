@@ -2,10 +2,7 @@
 import os
 import math
 import argparse
-from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
-import numpy as np
-from lxml import etree
 from tabulate import tabulate
 from pymicmac import utils_execution
 
@@ -34,7 +31,6 @@ def run(xmlFile, foldersNames):
     nY = int(math.ceil(math.sqrt(numFolders)))
     nX = int(math.ceil(numFolders / nY))
 
-    numAxis = int(math.ceil(math.sqrt(numFolders)))
 
     for i in range(numFolders):
         folderName = foldersNames[i]
@@ -44,7 +40,6 @@ def run(xmlFile, foldersNames):
 
         if os.path.isfile(logFileName):
             lines = open(logFileName, 'r').read().split('\n')
-            dists = []
 
             gcpsUVW[folderName] = {}
             cpsUVW[folderName] = {}
