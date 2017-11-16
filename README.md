@@ -1,7 +1,7 @@
 # pymicmac
 
 [![Build Status](https://travis-ci.org/ImproPhoto/pymicmac.svg?branch=master)](https://travis-ci.org/ImproPhoto/pymicmac)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cedd804840ca4de0af4c6bae6939b28d)](https://www.codacy.com/app/c-meijer/pymicmac?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ImproPhoto/pymicmac&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/cedd804840ca4de0af4c6bae6939b28d)](https://www.codacy.com/app/ImproPhoto/pymicmac?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ImproPhoto/pymicmac&amp;utm_campaign=Badge_Grade)
 [![Anaconda-Server Badge](https://anaconda.org/improphoto/pymicmac/badges/installer/conda.svg)](https://conda.anaconda.org/improphoto)
 
 This software is a result of the Netherlands eScience Center project [Improving Open-Source Photogrammetric Workflows for Processing Big Datasets](https://www.esciencecenter.nl/project/improving-open-source-photogrammetric-workflows-for-processing-big-datasets).
