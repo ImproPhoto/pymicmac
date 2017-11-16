@@ -1,7 +1,12 @@
 #!/usr/bin/python
-import sys, numpy, os, math, argparse
+import sys
+import numpy
+import os
+import math
+import argparse
 from tabulate import tabulate
 from pymicmac import utils_execution
+
 
 def run(xmlFile, foldersNames):
     (gcpsXYZ, cpsXYZ) = utils_execution.readGCPXMLFile(xmlFile)
@@ -20,9 +25,9 @@ def run(xmlFile, foldersNames):
         logFileName = folderName + '/GCPBascule.log'
 
         if os.path.isfile(logFileName):
-            lines = open(logFileName,'r').read().split('\n')
-            (dsGCPs,usGCPs,vsGCPs,wsGCPs) = ([],[],[],[])
-            (dsCPs,usCPs,vsCPs,wsCPs) = ([],[],[],[])
+            lines = open(logFileName, 'r').read().split('\n')
+            (dsGCPs, usGCPs, vsGCPs, wsGCPs) = ([], [], [], [])
+            (dsCPs, usCPs, vsCPs, wsCPs) = ([], [], [], [])
 
             pKOs = []
 
@@ -57,28 +62,47 @@ def run(xmlFile, foldersNames):
             numPsFile = numGCPsFile + numCPsFile + numPKOsFile
 
             if numPsFile != numPs:
-                print("WARNING: number of GCPs/CPs (" + str(numPsFile) + ") processed in " + folderName + ' does not match the number in ' + xmlFile + "(" + str(numPs) + ")")
+                print(
+                    "WARNING: number of GCPs/CPs (" +
+                    str(numPsFile) +
+                    ") processed in " +
+                    folderName +
+                    ' does not match the number in ' +
+                    xmlFile +
+                    "(" +
+                    str(numPs) +
+                    ")")
 
             if len(pKOs):
-                tableKOs.append([folderName ,','.join(pKOs)])
+                tableKOs.append([folderName, ','.join(pKOs)])
             else:
-                tableKOs.append([folderName ,'-'])
+                tableKOs.append([folderName, '-'])
 
             pattern = "%0.4f"
             if len(dsGCPs):
-                tableGCPs.append([folderName, pattern % numpy.min(dsGCPs), pattern % numpy.max(dsGCPs), pattern % numpy.mean(dsGCPs), pattern % numpy.std(dsGCPs), pattern % numpy.median(dsGCPs)])
+                tableGCPs.append([folderName, pattern %
+                                  numpy.min(dsGCPs), pattern %
+                                  numpy.max(dsGCPs), pattern %
+                                  numpy.mean(dsGCPs), pattern %
+                                  numpy.std(dsGCPs), pattern %
+                                  numpy.median(dsGCPs)])
                 #tableGCPs.append([folderName, pattern % numpy.mean(dsGCPs), pattern % numpy.std(dsGCPs), pattern % numpy.mean(usGCPs), pattern % numpy.std(usGCPs), pattern % numpy.mean(vsGCPs), pattern % numpy.std(vsGCPs), pattern % numpy.mean(wsGCPs), pattern % numpy.std(wsGCPs)])
             else:
                 tableGCPs.append([folderName, '-', '-', '-', '-', '-'])
                 #tableGCPs.append([folderName, '-', '-', '-', '-', '-', '-', '-', '-'])
             if len(dsCPs):
-                tableCPs.append([folderName, pattern % numpy.min(dsCPs), pattern % numpy.max(dsCPs), pattern % numpy.mean(dsCPs), pattern % numpy.std(dsCPs), pattern % numpy.median(dsCPs)])
+                tableCPs.append([folderName, pattern %
+                                 numpy.min(dsCPs), pattern %
+                                 numpy.max(dsCPs), pattern %
+                                 numpy.mean(dsCPs), pattern %
+                                 numpy.std(dsCPs), pattern %
+                                 numpy.median(dsCPs)])
                 #tableCPs.append([folderName, pattern % numpy.mean(dsCPs), pattern % numpy.std(dsCPs), pattern % numpy.mean(usCPs), pattern % numpy.std(usCPs), pattern % numpy.mean(vsCPs), pattern % numpy.std(vsCPs), pattern % numpy.mean(wsCPs), pattern % numpy.std(wsCPs)])
             else:
                 tableCPs.append([folderName, '-', '-', '-', '-', '-'])
                 #tableCPs.append([folderName, '-', '-', '-', '-', '-', '-', '-', '-'])
         else:
-            tableKOs.append([folderName ,'-'])
+            tableKOs.append([folderName, '-'])
 
             tableGCPs.append([folderName, '-', '-', '-', '-', '-'])
             #tableGCPs.append([folderName, '-', '-', '-', '-', '-', '-', '-', '-'])
@@ -89,11 +113,12 @@ def run(xmlFile, foldersNames):
     print("GCPBascule Dists statistics")
     print("###########################")
     print('KOs')
-    print(tabulate(tableKOs, headers=['#Name', '',]))
+    print(tabulate(tableKOs, headers=['#Name', '', ]))
     print()
 
     header = ['#Name', 'Min', 'Max', 'Mean', 'Std', 'Median']
-    #header = ['#Name', 'MeanDist', 'StdDist', 'MeanXDist', 'StdXDist', 'MeanYDist', 'StdYDist', 'MeanZDist', 'StdZDist']
+    # header = ['#Name', 'MeanDist', 'StdDist', 'MeanXDist', 'StdXDist',
+    # 'MeanYDist', 'StdYDist', 'MeanZDist', 'StdZDist']
 
     print('GCPs')
     print(tabulate(tableGCPs, headers=header))
@@ -108,9 +133,22 @@ def argument_parser():
    # define argument menu
     description = "Gets statistics of GCPBascule runs in one or more execution folders"
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-x', '--xml',default='', help='XML file with the 3D position of the GCPs (and possible CPs)', type=str, required=True)
-    parser.add_argument('-f', '--folders',default='', help='Comma-separated list of execution folders where to look for the GCPBascule.log files', type=str, required=True)
+    parser.add_argument(
+        '-x',
+        '--xml',
+        default='',
+        help='XML file with the 3D position of the GCPs (and possible CPs)',
+        type=str,
+        required=True)
+    parser.add_argument(
+        '-f',
+        '--folders',
+        default='',
+        help='Comma-separated list of execution folders where to look for the GCPBascule.log files',
+        type=str,
+        required=True)
     return parser
+
 
 def main():
     try:
@@ -118,6 +156,7 @@ def main():
         run(a.xml, a.folders)
     except Exception as e:
         print(e)
+
 
 if __name__ == "__main__":
     main()

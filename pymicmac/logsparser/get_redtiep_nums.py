@@ -1,7 +1,10 @@
 #!/usr/bin/python
-import sys, os, argparse
+import sys
+import os
+import argparse
 from tabulate import tabulate
 from pymicmac import utils_execution
+
 
 def run(foldersNames):
     header = ['#Name', 'CInit', 'Ini', 'CEnd', 'End']
@@ -21,25 +24,36 @@ def run(foldersNames):
         c2 = 0
         for line in lines:
             if line.count('#InitialHomolPoints:'):
-                c1+=1
-                inits.append(int(line.split(' ')[0].split(':')[-1].replace('.','')))
+                c1 += 1
+                inits.append(
+                    int(line.split(' ')[0].split(':')[-1].replace('.', '')))
             if line.count('#HomolPoints:'):
-                c2+=1
-                ends.append(int(line.split(' ')[1].split('=>')[-1].split('(')[0]))
+                c2 += 1
+                ends.append(
+                    int(line.split(' ')[1].split('=>')[-1].split('(')[0]))
 
-        table.append([folderName, str(c1), str(sum(inits)), str(c2), str(sum(ends))])
+        table.append([folderName, str(c1), str(
+            sum(inits)), str(c2), str(sum(ends))])
 
     print("#################")
     print("RedTieP reduction")
     print("#################")
     print(tabulate(table, headers=header))
 
+
 def argument_parser():
    # define argument menu
     description = "Gets statistics of RedTieP runs in one or more execution folders"
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-f', '--folders',default='', help='Comma-separated list of execution folders where to look for the RedTieP.log files (or RedTieP_logs folders if RedTieP was executed with Noodels)', type=str, required=True)
+    parser.add_argument(
+        '-f',
+        '--folders',
+        default='',
+        help='Comma-separated list of execution folders where to look for the RedTieP.log files (or RedTieP_logs folders if RedTieP was executed with Noodels)',
+        type=str,
+        required=True)
     return parser
+
 
 def main():
     try:
@@ -47,6 +61,7 @@ def main():
         run(a.folders)
     except Exception as e:
         print(e)
+
 
 if __name__ == "__main__":
     main()

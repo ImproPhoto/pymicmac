@@ -1,5 +1,7 @@
- #!/usr/bin/python
-import os, math, argparse
+#!/usr/bin/python
+import os
+import math
+import argparse
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,11 +9,18 @@ from lxml import etree
 from tabulate import tabulate
 from pymicmac import utils_execution
 
+
 def run(xmlFile, foldersNames):
     (gcpsXYZ, cpsXYZ) = utils_execution.readGCPXMLFile(xmlFile)
 
-    fig = plt.figure(figsize=(27,15))
-    fig.subplots_adjust(left=0.01, bottom=0.01, right=0.99, top=0.99, wspace=0.005, hspace=0.005)
+    fig = plt.figure(figsize=(27, 15))
+    fig.subplots_adjust(
+        left=0.01,
+        bottom=0.01,
+        right=0.99,
+        top=0.99,
+        wspace=0.005,
+        hspace=0.005)
 
     gcpsUVW = {}
     cpsUVW = {}
@@ -34,7 +43,7 @@ def run(xmlFile, foldersNames):
         logFileName = folderName + '/Campari.log'
 
         if os.path.isfile(logFileName):
-            lines = open(logFileName,'r').read().split('\n')
+            lines = open(logFileName, 'r').read().split('\n')
             dists = []
 
             gcpsUVW[folderName] = {}
@@ -62,12 +71,12 @@ def run(xmlFile, foldersNames):
                     else:
                         raise Exception('GCP/CP: ' + gcp + ' not found')
 
-            ax = fig.add_subplot(nX, nY, i+1, projection='3d')
+            ax = fig.add_subplot(nX, nY, i + 1, projection='3d')
 
-            (xs,ys,zs,us,vs,ws) = ([],[],[],[],[],[])
+            (xs, ys, zs, us, vs, ws) = ([], [], [], [], [], [])
             for gcp in gcpsUVW[folderName]:
-                (x,y,z) = gcpsXYZ[gcp]
-                (u,u,w,_) = gcpsUVW[folderName][gcp]
+                (x, y, z) = gcpsXYZ[gcp]
+                (u, u, w, _) = gcpsUVW[folderName][gcp]
                 xs.append(x)
                 ys.append(y)
                 zs.append(z)
@@ -77,12 +86,21 @@ def run(xmlFile, foldersNames):
                 # print(x, y, z, u, v, w)
                 ax.text(x, y, z, gcp, color='blue', fontsize=6)
             ax.scatter(xs, ys, zs, marker='o', c='blue')
-            ax.quiver(xs, ys, zs, us, vs, ws, length=1.0, pivot="tail", color='blue')
+            ax.quiver(
+                xs,
+                ys,
+                zs,
+                us,
+                vs,
+                ws,
+                length=1.0,
+                pivot="tail",
+                color='blue')
 
-            (xs,ys,zs,us,vs,ws) = ([],[],[],[],[],[])
+            (xs, ys, zs, us, vs, ws) = ([], [], [], [], [], [])
             for cp in cpsUVW[folderName]:
-                (x,y,z) = cpsXYZ[cp]
-                (u,u,w,_) = cpsUVW[folderName][cp]
+                (x, y, z) = cpsXYZ[cp]
+                (u, u, w, _) = cpsUVW[folderName][cp]
                 xs.append(x)
                 ys.append(y)
                 zs.append(z)
@@ -92,8 +110,16 @@ def run(xmlFile, foldersNames):
                 # print(x, y, z, u, v, w)
                 ax.text(x, y, z, cp, color='red', fontsize=6)
             ax.scatter(xs, ys, zs, marker='o', c='red')
-            ax.quiver(xs, ys, zs, us, vs, ws, length=1.0, pivot="tail", color='red')
-
+            ax.quiver(
+                xs,
+                ys,
+                zs,
+                us,
+                vs,
+                ws,
+                length=1.0,
+                pivot="tail",
+                color='red')
 
             ax.set_xlabel('X', fontsize=8, labelpad=-5)
             ax.set_ylabel('Y', fontsize=8, labelpad=-5)
@@ -104,14 +130,15 @@ def run(xmlFile, foldersNames):
 
             blue_proxy = plt.Rectangle((0, 0), 1, 1, fc="b")
             red_proxy = plt.Rectangle((0, 0), 1, 1, fc="r")
-            ax.legend([blue_proxy,red_proxy],['GCPs','CPs'], loc='upper right', bbox_to_anchor=(0.9, 0.9),prop={'size':6})
+            ax.legend([blue_proxy, red_proxy], ['GCPs', 'CPs'],
+                      loc='upper right', bbox_to_anchor=(0.9, 0.9), prop={'size': 6})
             ax.view_init(elev=-90., azim=0.)
 
             # ax.set_zlim(1,6)
 
     table = []
     for gcp in sorted(gcpsXYZ):
-        row = [gcp,]
+        row = [gcp, ]
         for i in range(numFolders):
             folderName = foldersNames[i]
             if folderName in gcpsUVW and gcp in gcpsUVW[folderName]:
@@ -124,13 +151,13 @@ def run(xmlFile, foldersNames):
     print("Campari Dist per GCP/CP")
     print("########################")
 
-    header = ['GCP',] + foldersNames
+    header = ['GCP', ] + foldersNames
     print(tabulate(table, headers=header))
     print()
 
     table = []
     for cp in sorted(cpsXYZ):
-        row = [cp,]
+        row = [cp, ]
         for i in range(numFolders):
             folderName = foldersNames[i]
             if folderName in cpsUVW and cp in cpsUVW[folderName]:
@@ -139,7 +166,7 @@ def run(xmlFile, foldersNames):
                 row.append('-')
         table.append(row)
 
-    header = ['CP',] + foldersNames
+    header = ['CP', ] + foldersNames
     print(tabulate(table, headers=header))
     print()
 
@@ -147,12 +174,25 @@ def run(xmlFile, foldersNames):
 
 
 def argument_parser():
-   # define argument menu
+                 # define argument menu
     description = "Plots a 3D quiver of Campari runs in one or more execution folders"
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-x', '--xml',default='', help='XML file with the 3D position of the GCPs (and possible CPs)', type=str, required=True)
-    parser.add_argument('-f', '--folders',default='', help='Comma-separated list of execution folders where to look for the Campari.log files', type=str, required=True)
+    parser.add_argument(
+        '-x',
+        '--xml',
+        default='',
+        help='XML file with the 3D position of the GCPs (and possible CPs)',
+        type=str,
+        required=True)
+    parser.add_argument(
+        '-f',
+        '--folders',
+        default='',
+        help='Comma-separated list of execution folders where to look for the Campari.log files',
+        type=str,
+        required=True)
     return parser
+
 
 def main():
     try:
@@ -160,6 +200,7 @@ def main():
         run(a.xml, a.folders)
     except Exception as e:
         print(e)
+
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,10 @@
- #!/usr/bin/python
-import sys, numpy, argparse
+#!/usr/bin/python
+import sys
+import numpy
+import argparse
 from tabulate import tabulate
 from pymicmac import utils_execution
+
 
 def run(originalHomol, compareHomols):
     table = []
@@ -15,7 +18,8 @@ def run(originalHomol, compareHomols):
         homolSize = utils_execution.getSize(compareHomol)
         pattern = "%0.4f"
         if homolSize > 0:
-            table.append([compareHomol, pattern % ((homolSize/rootHomolSize))])
+            table.append([compareHomol, pattern %
+                          ((homolSize / rootHomolSize))])
         else:
             table.append([compareHomol, '-'])
 
@@ -25,14 +29,28 @@ def run(originalHomol, compareHomols):
     print(tabulate(table, headers=header))
     print()
 
+
 def argument_parser():
-   # define argument menu
+                 # define argument menu
     description = "Gets statistics of comparing Homol folder in different execution folders"
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
-    parser.add_argument('-o','--original',default='', help='Original Homol folder', type=str, required=True)
-    parser.add_argument('-c','--compare',default='', help='Comma-separated Homol folder to compare', type=str, required=True)
+    parser.add_argument(
+        '-o',
+        '--original',
+        default='',
+        help='Original Homol folder',
+        type=str,
+        required=True)
+    parser.add_argument(
+        '-c',
+        '--compare',
+        default='',
+        help='Comma-separated Homol folder to compare',
+        type=str,
+        required=True)
     return parser
+
 
 def main():
     try:
@@ -40,6 +58,7 @@ def main():
         run(a.original, a.compare)
     except Exception as e:
         print(e)
+
 
 if __name__ == "__main__":
     main()
