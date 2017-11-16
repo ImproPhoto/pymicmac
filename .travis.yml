@@ -29,5 +29,5 @@ install:
 
 script:
   - cd tests
-  - ./run_distributed_tapioca_local_test.sh
-  - ./run_workflow_test.sh
+  - travis_wait ./run_distributed_tapioca_local_test.sh
+  - travis_wait ./run_workflow_test.sh
