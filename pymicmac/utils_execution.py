@@ -28,6 +28,13 @@ def readGCPXMLFile(xmlFile):
 
 
 def getSize(absPath):
+    """
+    Get file size.
+
+    :param param1: absPath
+    :returns: file size
+    :raises BaseException: raises an exception
+    """
     (out, err) = subprocess.Popen('du -sb ' + absPath, shell=True,
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     try:
@@ -37,7 +44,13 @@ def getSize(absPath):
 
 
 def apply_argument_parser(argumentsParser, options=None):
-    """ Apply the argument parser. """
+    """
+    Apply the argument parser.
+
+    :param param1: argumentsParser
+    :param param2: options
+    """
+
     if options is not None:
         args = argumentsParser.parse_args(options)
     else:

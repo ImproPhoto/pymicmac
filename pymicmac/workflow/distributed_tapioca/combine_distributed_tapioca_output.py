@@ -5,7 +5,13 @@ from pymicmac import utils_execution
 
 
 def run(inputFolder, outputFolder):
-    # Run Tapioca command
+    """
+    Runs Tapioca command.
+
+    :param param1: inputFolder
+    :param param2: outputFolder
+    :returns: None
+    """
     if os.path.isdir(outputFolder):
         raise Exception(outputFolder + ' already exists!')
     os.makedirs(outputFolder)
@@ -27,7 +33,12 @@ def run(inputFolder, outputFolder):
 
 
 def argument_parser():
-   # define argument menu
+    """
+    Defines argument menu.
+
+    :returns: parser
+    """
+
     description = "Combine Homol folders into single one. To be run after a distributed Tapioca"
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
@@ -49,6 +60,9 @@ def argument_parser():
 
 
 def main():
+    """
+    The main workflow function. Uses the parsed arguments.
+    """
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.inputFolder, a.outputFolder)

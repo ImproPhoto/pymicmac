@@ -36,7 +36,18 @@ logFolderAbsPath = ""
 
 
 class Job:
+
     def __init__(self, task, exclude, state, job, key):
+    """
+    Noodles Job class.
+
+    :param param1: task
+    :param param2: exclude
+    :param param3: state
+    :param param3: job
+    :param param3: key
+    :returns: None
+    """
         self.task = task
         self.exclude = exclude
         self.state = state
@@ -182,6 +193,11 @@ def runNoodles(jsonFile, logFolder, numThreads):
 
 
 def main():
+    """
+    Main function to run the Noodles job.
+
+    :returns: None
+    """
     parser = argparse.ArgumentParser(
         description="SOBA: Run a non-directional exclusion graph job.")
     parser.add_argument(

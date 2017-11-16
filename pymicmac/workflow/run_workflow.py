@@ -5,7 +5,11 @@ from pymicmac import utils_execution
 
 
 def argument_parser():
-   # define argument menu
+    """
+    Define argument menu.
+
+    :returns: parser
+    """
     description = "Run a set of MicMac commands sequentially (one after the other). The commands are specified by a Worflow XML configuration file. During the execution of each command there is monitoring of the used CPU/MEM/disk by the system."
     parser = argparse.ArgumentParser(description=description)
     parser.add_argument(
@@ -43,6 +47,10 @@ def argument_parser():
 
 
 def main():
+    """
+    The main workflow function. Uses the parsed arguments.
+
+    """
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run_seqcommands_local.run(

@@ -5,6 +5,14 @@ from pymicmac import utils_execution
 
 
 def run(inputFolder, imageFormat, outputFile):
+    """
+    Generates a XML file for the images in given folder.
+
+    :param param1: inputFolder
+    :param param2: imageFormat
+    :param param2: outputFile
+    :returns: None
+    """
     # Check user parameters
     if not os.path.isdir(inputFolder):
         raise Exception(inputFolder + " does not exist! (or is not a folder)")
@@ -40,7 +48,11 @@ def run(inputFolder, imageFormat, outputFile):
 
 
 def argument_parser():
-   # define argument menu
+    """
+    Defines argument menu.
+
+    :returns: parser
+    """
     description = "Creates a valid image pairs file suitable for Tapioca (to run with option File). Every possible image pair is added"
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
@@ -69,6 +81,9 @@ def argument_parser():
 
 
 def main():
+    """
+    The main workflow function. Uses the parsed arguments.
+    """
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.input, a.format, a.output)

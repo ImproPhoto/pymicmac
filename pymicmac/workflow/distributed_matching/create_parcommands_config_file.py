@@ -9,6 +9,20 @@ from scipy import spatial
 
 
 def getTileIndex(pX, pY, minX, minY, maxX, maxY, nX, nY):
+    """
+    Calculates the position of tile.
+
+    :param param1: pX
+    :param param2: pY
+    :param param3: minX
+    :param param4: minY
+    :param param5: maxX
+    :param param6: maxY
+    :param param7: nX
+    :param param8: nY
+    :returns: xpos, ypos
+    """
+
     xpos = int((pX - minX) * nX / (maxX - minX))
     ypos = int((pY - minY) * nY / (maxY - minY))
     # If it is in the edge of the box (in the maximum side) we need to put in
@@ -22,7 +36,20 @@ def getTileIndex(pX, pY, minX, minY, maxX, maxY, nX, nY):
 
 def run(orientationFolder, homolFolder, imagesFormat,
         numNeighbours, outputFile, outputFolder, num, maltOptions):
-    # Check user parameters
+    """
+    Check user parameters.
+
+    :param param1: orientationFolder
+    :param param2: homolFolder
+    :param param3: imagesFormat
+    :param param4: numNeighbours
+    :param param5: outputFile
+    :param param6: outputFolder
+    :param param7: num
+    :param param8: maltOptions
+
+    :returns: None
+    """
     if not os.path.isdir(orientationFolder):
         raise Exception(orientationFolder + ' does not exist')
     includeHomol = homolFolder != ''
@@ -186,7 +213,11 @@ def run(orientationFolder, homolFolder, imagesFormat,
 
 
 def argument_parser():
-                 # define argument menu
+    """
+    Define argument menu.
+
+    :returns: parser
+    """
     description = "Distributed solution for matching, i.e. point cloud generation from images and orientation. Splits the matching of a large area in the matching of many tiles. IMPORTANT: only use for images oriented in cartographic reference systems (tiling is done assuming Z is zenith), ideally for aerial images."
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
@@ -248,6 +279,11 @@ def argument_parser():
 
 
 def main():
+    """
+    The main workflow function. Uses the parsed arguments.
+
+    """
+
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.inputOrientation, a.inputHomol, a.format,

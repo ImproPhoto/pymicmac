@@ -9,13 +9,25 @@ from lxml import etree
 
 
 def chunks(l, n):
-    """Yield successive n-sized chunks from l."""
+    """
+    Yield successive n-sized chunks from l.
+    """
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
 
 def run(inputFolder, outputFile, outputFormat, outputFolder, num):
-    # Check user parameters
+    """
+    Check user parameters.
+
+    :param param1: inputFolder
+    :param param2: outputFile
+    :param param3: outputFormat
+    :param param4: outputFolder
+    :param param5: num
+
+    :returns: None
+    """
     if not os.path.isdir(inputFolder):
         raise Exception(inputFolder + ' does not exist')
     # Check output file and folder
@@ -120,7 +132,11 @@ def run(inputFolder, outputFile, outputFormat, outputFolder, num):
 
 
 def argument_parser():
-                 # define argument menu
+    """
+    Define argument menu.
+
+    :returns: parser
+    """
     description = "Creates a 2-level pycoeman XML parallel commands configuration file to convert a bunch of ply files into laz/laz using PDAL. The second level is executed with coeman-par-local."
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
@@ -163,6 +179,10 @@ def argument_parser():
 
 
 def main():
+    """
+    The main workflow function. Uses the parsed arguments.
+
+    """
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.input, a.output, a.format, a.folder, a.num)

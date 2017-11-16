@@ -7,7 +7,15 @@ from pymicmac import utils_execution
 
 
 def run(inputFile, outputFile, outputFolder, num):
-    # Check user parameters
+    """
+    Checks the user parameters for distributed tapioca.
+
+    :param param1: inputFile
+    :param param2: outputFile
+    :param param3: outputFolder
+    :param param4: num
+    :returns: None
+    """
     if not os.path.isfile(inputFile):
         raise Exception(inputFile + ' does not exist')
     if os.path.isfile(outputFile):
@@ -143,7 +151,11 @@ def run(inputFile, outputFile, outputFolder, num):
 
 
 def argument_parser():
-   # define argument menu
+   """
+    Defines the argument menu
+
+    :returns: parser
+    """
     description = "Splits a valid image pairs file suitable for Tapioca into chunks. For each chunk, it adds a component in a pycomean parallel commands XML configuration file, and it stores in a parallel configuration folder the information of the chunk "
     parser = argparse.ArgumentParser(description=description)
     # fill argument groups
@@ -179,6 +191,11 @@ def argument_parser():
 
 
 def main():
+    """
+    The main function. Uses the parsed arguments.
+
+    :returns: None
+    """
     try:
         a = utils_execution.apply_argument_parser(argument_parser())
         run(a.input, a.output, a.folder, a.num)
