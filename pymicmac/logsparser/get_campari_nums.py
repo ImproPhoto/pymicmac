@@ -2,12 +2,9 @@
 import sys
 import numpy
 import os
-import math
 import argparse
 from tabulate import tabulate
-from lxml import etree
 from pymicmac import utils_execution
-from pymicmac.logsparser import get_gcpbascule_nums
 
 
 def run(xmlFile, foldersNames):
@@ -25,8 +22,8 @@ def run(xmlFile, foldersNames):
 
         if os.path.isfile(logFileName):
             lines = open(logFileName, 'r').read().split('\n')
-            (dsGCPs, usGCPs, vsGCPs, wsGCPs) = ([], [], [], [])
-            (dsCPs, usCPs, vsCPs, wsCPs) = ([], [], [], [])
+            (dsGCPs, _, _, _) = ([], [], [], [])
+            (dsCPs, _, _, _) = ([], [], [], [])
 
             eiLinesIndexes = []
             for j in range(len(lines)):
@@ -39,22 +36,11 @@ def run(xmlFile, foldersNames):
                 line = lines[j]
                 if line.count('Dist'):
                     gcp = line.split()[1]
-                    fields = line.split('[')[-1].split(']')[0].split(',')
-                    # u = math.fabs(float(fields[0]))
-                    # v = math.fabs(float(fields[1]))
-                    # w = math.fabs(float(fields[2]))
                     d = float(line.split('Dist')[-1].split()[0].split('=')[-1])
-
                     if gcp in gcpsXYZ:
-                        dsGCPs.append(d)
-                        # usGCPs.append(u)
-                        # vsGCPs.append(v)
-                        # wsGCPs.append(w)
+                        dsGCPs.append(d)                        
                     elif gcp in cpsXYZ:
                         dsCPs.append(d)
-                        # usCPs.append(u)
-                        # vsCPs.append(v)
-                        # wsCPs.append(w)
                     else:
                         print('GCP/CP: ' + gcp + ' not found')
                         sys.exit(1)
@@ -74,10 +60,8 @@ def run(xmlFile, foldersNames):
                                   numpy.mean(dsGCPs), pattern %
                                   numpy.std(dsGCPs), pattern %
                                   numpy.median(dsGCPs)])
-                #tableGCPs.append([folderName, pattern % numpy.mean(dsGCPs), pattern % numpy.std(dsGCPs), pattern % numpy.mean(usGCPs), pattern % numpy.std(usGCPs), pattern % numpy.mean(vsGCPs), pattern % numpy.std(vsGCPs), pattern % numpy.mean(wsGCPs), pattern % numpy.std(wsGCPs)])
             else:
                 tableGCPs.append([folderName, '-', '-', '-', '-', '-'])
-                #tableGCPs.append([folderName, '-', '-', '-', '-', '-', '-', '-', '-'])
             if len(dsCPs):
                 tableCPs.append([folderName, pattern %
                                  numpy.min(dsCPs), pattern %
@@ -85,17 +69,14 @@ def run(xmlFile, foldersNames):
                                  numpy.mean(dsCPs), pattern %
                                  numpy.std(dsCPs), pattern %
                                  numpy.median(dsCPs)])
-                #tableCPs.append([folderName, pattern % numpy.mean(dsCPs), pattern % numpy.std(dsCPs), pattern % numpy.mean(usCPs), pattern % numpy.std(usCPs), pattern % numpy.mean(vsCPs), pattern % numpy.std(vsCPs), pattern % numpy.mean(wsCPs), pattern % numpy.std(wsCPs)])
             else:
                 tableCPs.append([folderName, '-', '-', '-', '-', '-'])
-                #tableCPs.append([folderName, '-', '-', '-', '-', '-', '-', '-', '-'])
         else:
             tableKOs.append([folderName, '-'])
 
             tableGCPs.append([folderName, '-', '-', '-', '-', '-'])
-            #tableGCPs.append([folderName, '-', '-', '-', '-', '-', '-', '-', '-'])
             tableCPs.append([folderName, '-', '-', '-', '-', '-'])
-            #tableCPs.append([folderName, '-', '-', '-', '-', '-', '-', '-', '-'])
+ 
 
     print("########################")
     print("Campari Dists statistics")

@@ -3,7 +3,6 @@ import argparse
 import os
 import glob
 import json
-import numpy
 from pymicmac import utils_execution
 from lxml import etree
 

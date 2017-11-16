@@ -36,6 +36,7 @@ def getSize(absPath):
     :raises BaseException: raises an exception
     """
     (out, err) = subprocess.Popen('du -sb ' + absPath, shell=True,
+
                                   stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     try:
         return int(out.split()[0])

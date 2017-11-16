@@ -14,7 +14,7 @@ with open('requirements.txt') as f:
 
 setup(
     name='pymicmac',
-    version='1.0.0',
+    version='1.0.1',
     packages=['pymicmac', 'pymicmac.logsparser', 'pymicmac.logsplotter', 'pymicmac.noodles',
               'pymicmac.workflow', 'pymicmac.workflow.distributed_tapioca', 'pymicmac.workflow.distributed_matching', ],
     license='',
