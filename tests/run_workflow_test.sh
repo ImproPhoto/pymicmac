@@ -21,4 +21,13 @@ micmac-run-workflow -d . -e param-estimation -c param-estimation.xml
 
 echo "micmac-run-workflow -d . -e matching -c matching.xml"
 micmac-run-workflow -d . -e matching -c matching.xml
+
+# Test if we produced expected ply model
+_match_count=$(matching/1.ply |wc -w)
+if [ $_match_count -ne 1 ]
+then
+    echo 'Test failed, output ply file wasn't produced.'
+    exit 1
+fi
+
 echo "done."
