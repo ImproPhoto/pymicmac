@@ -88,11 +88,6 @@ def run(orientationFolder, homolFolder, imagesFormat,
     distances = []
     for camera2DPoint in camera2DPoints[:numSamplePoints]:
         distances.append(kdtree.query(camera2DPoint, 2)[0][1])
-    meanDistance = numpy.mean(distances)
-#    if tileSizeX > meanDistance:
-#        raise Exception("Increase number of tiles in X. It has to be higher than " + str(int(nX * (tileSizeX/meanDistance))))
-#    if tileSizeY > meanDistance:
-#        raise Exception("Increase number of tiles in Y. It has to be higher than " + str(int(nY * (tileSizeY/meanDistance))))
 
     # For each tile first we get a list of images whose camera XY position lays within the tile
     # note: there may be empty tiles

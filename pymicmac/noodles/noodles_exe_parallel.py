@@ -8,13 +8,11 @@ from noodles.run.thread_pool import (thread_pool)
 from noodles.run.scheduler import (Scheduler)
 from noodles.display import NCDisplay
 
-from noodles.display import SimpleDisplay
 
 import subprocess
 import sys
 import argparse
 import json
-import time
 import shlex
 import os
 
@@ -58,7 +56,7 @@ def dynamic_exclusion_worker(display, n_threads):
     """
     LogQ = Queue()
 
-    S = Scheduler(error_handler=display.error_handler)
+    Scheduler(error_handler=display.error_handler)
 
     threading.Thread(
         target=patch,
